@@ -1,6 +1,7 @@
 package pkg
 
 import (
+	"time"
 	"github.com/BurntSushi/toml"
 	"log"
 )
@@ -28,8 +29,8 @@ type app struct {
 
 type server struct {
 	HttpPort     int `toml:"HTTP_PORT"`
-	ReadTimeout  int `toml:"READ_TIMEOUT"`
-	WriteTimeout int `toml:"WRITE_TIMEOUT"`
+	ReadTimeout  time.Duration `toml:"READ_TIMEOUT"`
+	WriteTimeout time.Duration `toml:"WRITE_TIMEOUT"`
 }
 
 type database struct {
