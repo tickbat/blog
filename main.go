@@ -1,12 +1,20 @@
 package main
 
 import (
-	"blog/pkg"
+	"blog/pkg/setting"
 	"fmt"
+	"net/http"
+	"blog/routers"
 )
 
 func main() {
-	fmt.Print(pkg.Config.App.PageSize)
+	router := routers.InitRouters()
+	s := &http.Server{
+		Addr:           fmt.Sprintf(":%d", setting.Config.Server.HttpPort),
+		Handler:        router,
+		ReadTimeout:    setting.Config.Server.ReadTimeout,
+		WriteTimeout:   setting.Config.Server.WriteTimeout,
+		MaxHeaderBytes: 1 << 20,
+	}
+	s.ListenAndServe()
 }
-
-// var xx *yy 声明后的值为nil，所以无法取赋值给实体*xx，所以一般使用 a := new(xx)，new会分配内存地址

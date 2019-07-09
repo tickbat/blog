@@ -1,4 +1,4 @@
-package pkg
+package setting
 
 import (
 	"time"
@@ -20,6 +20,8 @@ func init() {
 type config struct {
 	RunMode string `toml:"RUN_MODE"`
 	App     *app
+	Server *server
+	Database *database
 }
 
 type app struct {
