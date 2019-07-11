@@ -8,29 +8,31 @@ import (
 	"blog/pkg/setting"
 )
 
-type model struct {
+type Model struct {
 	ID int `gorm:"primary_key json:"id"`
 	CreatedOn int `json:"create_on"`
 	ModifiedOn int `json:"modified_on"`
 }
 
+var db *gorm.DB
+
 func init() {
 	var (
 		err error
-		dbData = &setting.Config.Database
+		dbData = setting.Config.Database
 		dbType = dbData.Type
 		dbName = dbData.Name
-		user = dbData.Name
+		user = dbData.User
 		password = dbData.Password
 		host = dbData.Host
 		tablePrefix = dbData.TablePrefix
 	)
-	db, err := gorm.Open(dbType, "%s:%s@/tcp(%s)/%s?charset=utf8&parseTime=True&loc=Local",
+	db, err = gorm.Open(dbType, fmt.Sprintf("%s:%s@/tcp(%s)/%s?charset=utf8&parseTime=True&loc=Local",
 		user,
 		password,
 		host,
-		dbName
-	)
+		dbName))
+	// db, err = gorm.Open(dbType, "root:root@/tcp(127.0.0.1:3306)/blog?charset=utf8&parseTime=True&loc=Local")
 	if err != nil {
 		log.Println(err)
 	}
@@ -40,4 +42,8 @@ func init() {
 	db.SingularTable(true)
 
   	defer db.Close()
+}
+
+func CloseDB() {
+	defer db.Close()
 }
