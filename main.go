@@ -3,8 +3,9 @@ package main
 import (
 	"blog/pkg/setting"
 	"fmt"
-	"net/http"
 	"blog/routers"
+	"time"
+	"net/http"
 )
 
 func main() {
@@ -12,8 +13,8 @@ func main() {
 	s := &http.Server{
 		Addr:           fmt.Sprintf(":%d", setting.Config.Server.HttpPort),
 		Handler:        router,
-		ReadTimeout:    setting.Config.Server.ReadTimeout,
-		WriteTimeout:   setting.Config.Server.WriteTimeout,
+		ReadTimeout:    setting.Config.Server.ReadTimeout * time.Second,
+		WriteTimeout:   setting.Config.Server.WriteTimeout * time.Second,
 		MaxHeaderBytes: 1 << 20,
 	}
 	s.ListenAndServe()

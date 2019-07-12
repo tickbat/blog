@@ -9,7 +9,7 @@ import (
 )
 
 type Model struct {
-	ID int `gorm:"primary_key json:"id"`
+	ID int `gorm:"primary_key" json:"id"`
 	CreatedOn int `json:"create_on"`
 	ModifiedOn int `json:"modified_on"`
 }
@@ -27,12 +27,9 @@ func init() {
 		host = dbData.Host
 		tablePrefix = dbData.TablePrefix
 	)
-	db, err = gorm.Open(dbType, fmt.Sprintf("%s:%s@/tcp(%s)/%s?charset=utf8&parseTime=True&loc=Local",
-		user,
-		password,
-		host,
-		dbName))
-	// db, err = gorm.Open(dbType, "root:root@/tcp(127.0.0.1:3306)/blog?charset=utf8&parseTime=True&loc=Local")
+	source := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True&loc=Local", user, password, host, dbName)
+	println(source)
+	db, err = gorm.Open(dbType, source)
 	if err != nil {
 		log.Println(err)
 	}
@@ -41,7 +38,7 @@ func init() {
 	}
 	db.SingularTable(true)
 
-  	defer db.Close()
+  	// defer db.CloseDB()
 }
 
 func CloseDB() {

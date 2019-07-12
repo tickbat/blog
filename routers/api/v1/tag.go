@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"log"
 	"github.com/gin-gonic/gin"
 	"github.com/Unknwon/com"
 	"blog/models"
@@ -13,8 +14,8 @@ import (
 // 获取多个文章标签
 func GetTags(c *gin.Context) {
 	name := c.Query("name")
-	var maps gin.H 
-	var data gin.H
+	maps := make(map[string]interface{})
+    data := make(map[string]interface{})
 	if name != "" {
 		maps["name"] = name
 	}
@@ -36,7 +37,14 @@ func GetTags(c *gin.Context) {
 
 // 新增文章标签
 func AddTag(c *gin.Context) {
-
+	var tag models.Tag
+	if err := c.BindJSON(&tag); err != nil {
+		log.Printf("%v\n", err)
+		c.String(200, "失败了")
+	} else {
+		models.AddTag(tag)
+		c.String(200, "成功了")
+	}
 }
 
 // 修改文章标签
