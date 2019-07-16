@@ -1,10 +1,11 @@
 package routers
+
 import (
 	"blog/routers/api/v1"
 	"github.com/gin-gonic/gin"
 )
 
-func InitRouters() *gin.Engine{
+func InitRouters() *gin.Engine {
 	r := gin.New()
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())

@@ -1,22 +1,22 @@
 package v1
 
 import (
-	"log"
-	"github.com/gin-gonic/gin"
-	"github.com/Unknwon/com"
 	"blog/models"
 	"blog/pkg/e"
-	"blog/pkg/util"
 	"blog/pkg/setting"
-	"net/http"
+	"blog/pkg/util"
 	"fmt"
+	"github.com/Unknwon/com"
+	"github.com/gin-gonic/gin"
+	"log"
+	"net/http"
 )
 
 // 获取多个文章标签
 func GetTags(c *gin.Context) {
 	name := c.Query("name")
 	maps := make(map[string]interface{})
-    data := make(map[string]interface{})
+	data := make(map[string]interface{})
 	if name != "" {
 		maps["name"] = name
 	}
@@ -27,13 +27,13 @@ func GetTags(c *gin.Context) {
 
 	code := e.SUCCESS
 	data["lists"] = models.GetTags(util.GetPage(c), setting.Config.App.PageSize, maps)
-    data["total"] = models.GetTagsTotal(maps)
+	data["total"] = models.GetTagsTotal(maps)
 
-    c.JSON(http.StatusOK, gin.H{
-        "code" : code,
-        "msg" : e.GetMsg(code),
-        "data" : data,
-    })
+	c.JSON(http.StatusOK, gin.H{
+		"code": code,
+		"msg":  e.GetMsg(code),
+		"data": data,
+	})
 }
 
 // 新增文章标签
@@ -55,6 +55,7 @@ func EditTag(c *gin.Context) {
 	var code = e.SUCCESS
 	if err := c.BindJSON(&tag); err != nil {
 		log.Printf("edit tag parse json error: %v\n", err)
+		return
 	}
 	id := com.StrTo(c.Param("id")).MustInt()
 	if models.ExistTagByID(id) {
@@ -63,12 +64,12 @@ func EditTag(c *gin.Context) {
 		code = e.ERROR_NOT_EXIST_TAG
 	}
 	c.JSON(http.StatusOK, gin.H{
-        "code" : code,
-        "msg" : e.GetMsg(code),
-    })
+		"code": code,
+		"msg":  e.GetMsg(code),
+	})
 }
 
 // 删除文章标签
 func DeleteTag(c *gin.Context) {
-	
+
 }

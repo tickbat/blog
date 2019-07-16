@@ -1,3 +1,5 @@
+create database blog;
+
 CREATE TABLE `blog_tag` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) DEFAULT '' COMMENT '标签名称',
