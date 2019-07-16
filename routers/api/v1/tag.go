@@ -9,6 +9,7 @@ import (
 	"blog/pkg/util"
 	"blog/pkg/setting"
 	"net/http"
+	"fmt"
 )
 
 // 获取多个文章标签
@@ -39,20 +40,35 @@ func GetTags(c *gin.Context) {
 func AddTag(c *gin.Context) {
 	var tag models.Tag
 	if err := c.BindJSON(&tag); err != nil {
-		log.Printf("%v\n", err)
-		c.String(200, "失败了")
+		log.Printf("add tag parse json error: %v\n", err)
 	} else {
+		fmt.Printf("tag: %+v", tag)
 		models.AddTag(tag)
+		fmt.Printf("add new tag: %v\n", tag)
 		c.String(200, "成功了")
 	}
 }
 
 // 修改文章标签
 func EditTag(c *gin.Context) {
-
+	var tag models.Tag
+	var code = e.SUCCESS
+	if err := c.BindJSON(&tag); err != nil {
+		log.Printf("edit tag parse json error: %v\n", err)
+	}
+	id := com.StrTo(c.Param("id")).MustInt()
+	if models.ExistTagByID(id) {
+		models.EditTag(tag)
+	} else {
+		code = e.ERROR_NOT_EXIST_TAG
+	}
+	c.JSON(http.StatusOK, gin.H{
+        "code" : code,
+        "msg" : e.GetMsg(code),
+    })
 }
 
 // 删除文章标签
 func DeleteTag(c *gin.Context) {
-
+	
 }

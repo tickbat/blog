@@ -1,15 +1,26 @@
 package models
 
 import (
-	"fmt"
+	"github.com/jinzhu/gorm"
+	"time"
 )
 
 type Tag struct {
 	Model
-	Name 		string 	`json:"name" binding:"required"`
-	CreatedBy 	string 	`json:"create_by"`
-	ModifiedBy 	string 	`json:"modified_by"`
-	State 		int 	`json:"state binding:"required,stateEnum"`
+	Name 		*string 	`json:"name" binding:"required"`
+	CreatedBy 	*string 	`json:"create_by"`
+	ModifiedBy 	*string 	`json:"modified_by"`
+	State 		*int 		`json:"state" binding:"required,eq=1|eq=2"`
+}
+
+func (tag *Tag) BeforeCreate(scope *gorm.Scope) error {
+    scope.SetColumn("CreatedOn", time.Now().Unix())
+    return nil
+}
+
+func (tag *Tag) BeforeUpdate(scope *gorm.Scope) error {
+	scope.SetColumn("ModifiedOn", time.Now().Unix())
+	return nil
 }
 
 func GetTags(pageNum int, pageSize int, maps interface{}) (tags []Tag) {
@@ -22,16 +33,22 @@ func GetTagsTotal(maps interface{}) (count int) {
 	return
 }
 
-func ExitTagName(name string) bool {
+
+func ExistTagByID(id int) bool {
 	var tag Tag
-	db.Select("id").Where("name = ?", name).First(&tag)
-	if tag.ID > 0 {
+	db.Select("id").Where("id = ?", id).First(&tag)
+	if tag.ID != nil {
 		return true
 	}
+
 	return false
 }
 
 func AddTag(tag Tag) bool {
 	db.Create(&tag)
 	return true
+}
+
+func EditTag(tag Tag){
+	db.Model(&tag).Update(tag)
 }

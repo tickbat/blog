@@ -9,9 +9,9 @@ import (
 )
 
 type Model struct {
-	ID int `gorm:"primary_key" json:"id"`
-	CreatedOn int `json:"create_on"`
-	ModifiedOn int `json:"modified_on"`
+	ID *int `gorm:"primary_key" json:"id"`
+	CreatedOn *int `json:"create_on"`
+	ModifiedOn *int `json:"modified_on"`
 }
 
 var db *gorm.DB
