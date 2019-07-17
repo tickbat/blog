@@ -5,7 +5,6 @@ import (
 	"blog/pkg/e"
 	"blog/pkg/setting"
 	"blog/pkg/util"
-	"fmt"
 	"github.com/Unknwon/com"
 	"github.com/gin-gonic/gin"
 	"log"
@@ -28,24 +27,20 @@ func GetTags(c *gin.Context) {
 	code := e.SUCCESS
 	data["lists"] = models.GetTags(util.GetPage(c), setting.Config.App.PageSize, maps)
 	data["total"] = models.GetTagsTotal(maps)
-
-	c.JSON(http.StatusOK, gin.H{
-		"code": code,
-		"msg":  e.GetMsg(code),
-		"data": data,
-	})
+	util.Res(c, http.StatusOK, code)
 }
 
 // 新增文章标签
 func AddTag(c *gin.Context) {
 	var tag models.Tag
-	if err := c.BindJSON(&tag); err != nil {
+	code := e.SUCCESS
+	if err := c.ShouldBindJSON(&tag); err != nil {
 		log.Printf("add tag parse json error: %v\n", err)
+		code = e.INVALID_PARAMS
+		util.Res(c, http.StatusBadRequest, code)
 	} else {
-		fmt.Printf("tag: %+v", tag)
 		models.AddTag(tag)
-		fmt.Printf("add new tag: %v\n", tag)
-		c.String(200, "成功了")
+		util.Res(c, http.StatusOK, code)
 	}
 }
 
@@ -53,23 +48,33 @@ func AddTag(c *gin.Context) {
 func EditTag(c *gin.Context) {
 	var tag models.Tag
 	var code = e.SUCCESS
-	if err := c.BindJSON(&tag); err != nil {
+	if err := c.ShouldBindJSON(&tag); err != nil {
 		log.Printf("edit tag parse json error: %v\n", err)
+		code := e.INVALID_PARAMS
+		util.Res(c, http.StatusBadRequest, code)
 		return
 	}
 	id := com.StrTo(c.Param("id")).MustInt()
+	tag.ID = &id
 	if models.ExistTagByID(id) {
 		models.EditTag(tag)
+		util.Res(c, http.StatusOK, code)
 	} else {
 		code = e.ERROR_NOT_EXIST_TAG
+		util.Res(c, http.StatusOK, code)
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"code": code,
-		"msg":  e.GetMsg(code),
-	})
 }
 
 // 删除文章标签
 func DeleteTag(c *gin.Context) {
-
+	id := com.StrTo(c.Param("id")).MustInt()
+	code := e.SUCCESS
+	if models.ExistTagByID(id) {
+		models.DeleteTag(id)
+		util.Res(c, http.StatusOK, code)
+	} else {
+		code = e.ERROR_NOT_EXIST_TAG
+		util.Res(c, http.StatusOK, code)
+	}
+	util.Res(c, http.StatusOK, code)
 }

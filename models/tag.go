@@ -37,11 +37,11 @@ func GetTagsTotal(maps interface{}) (count int) {
 func ExistTagByID(id int) bool {
 	var tag Tag
 	db.Select("id").Where("id = ?", id).First(&tag)
-	if tag.ID != nil {
-		return true
+	if tag.ID == nil {
+		return false
 	}
 
-	return false
+	return true
 }
 
 func AddTag(tag Tag) bool {
@@ -49,6 +49,12 @@ func AddTag(tag Tag) bool {
 	return true
 }
 
-func EditTag(tag Tag){
+func EditTag(tag Tag) {
 	db.Model(&tag).Update(tag)
+}
+
+func DeleteTag(id int) {
+	tag := new(Tag)
+	tag.ID = &id
+	db.Delete(tag)
 }
