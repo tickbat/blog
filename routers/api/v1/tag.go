@@ -13,21 +13,19 @@ import (
 
 // 获取多个文章标签
 func GetTags(c *gin.Context) {
-	name := c.Query("name")
-	maps := make(map[string]interface{})
 	data := make(map[string]interface{})
-	if name != "" {
-		maps["name"] = name
-	}
-	if arg := c.Query("state"); arg != "" {
-		state := com.StrTo(arg).MustInt()
-		maps["state"] = state
+	tag := new(models.QueryTag)
+	code := e.SUCCESS
+	if err := c.ShouldBindJSON(tag); err != nil {
+		log.Printf("query tag parse json error: %v\n", err)
+		code = e.INVALID_PARAMS
+		util.Res(c, http.StatusBadRequest, code, nil)
+		return
 	}
 
-	code := e.SUCCESS
-	data["lists"] = models.GetTags(util.GetPage(c), setting.Config.App.PageSize, maps)
-	data["total"] = models.GetTagsTotal(maps)
-	util.Res(c, http.StatusOK, code)
+	data["lists"] = models.GetTags(util.GetPage(c), setting.Config.App.PageSize, tag)
+	data["total"] = models.GetTagsTotal(tag)
+	util.Res(c, http.StatusOK, code, data)
 }
 
 // 新增文章标签
@@ -37,10 +35,10 @@ func AddTag(c *gin.Context) {
 	if err := c.ShouldBindJSON(&tag); err != nil {
 		log.Printf("add tag parse json error: %v\n", err)
 		code = e.INVALID_PARAMS
-		util.Res(c, http.StatusBadRequest, code)
+		util.Res(c, http.StatusBadRequest, code, nil)
 	} else {
 		models.AddTag(tag)
-		util.Res(c, http.StatusOK, code)
+		util.Res(c, http.StatusOK, code, nil)
 	}
 }
 
@@ -51,17 +49,17 @@ func EditTag(c *gin.Context) {
 	if err := c.ShouldBindJSON(&tag); err != nil {
 		log.Printf("edit tag parse json error: %v\n", err)
 		code := e.INVALID_PARAMS
-		util.Res(c, http.StatusBadRequest, code)
+		util.Res(c, http.StatusBadRequest, code, nil)
 		return
 	}
 	id := com.StrTo(c.Param("id")).MustInt()
 	tag.ID = &id
 	if models.ExistTagByID(id) {
 		models.EditTag(tag)
-		util.Res(c, http.StatusOK, code)
+		util.Res(c, http.StatusOK, code, nil)
 	} else {
 		code = e.ERROR_NOT_EXIST_TAG
-		util.Res(c, http.StatusOK, code)
+		util.Res(c, http.StatusOK, code, nil)
 	}
 }
 
@@ -71,10 +69,10 @@ func DeleteTag(c *gin.Context) {
 	code := e.SUCCESS
 	if models.ExistTagByID(id) {
 		models.DeleteTag(id)
-		util.Res(c, http.StatusOK, code)
+		util.Res(c, http.StatusOK, code, nil)
 	} else {
 		code = e.ERROR_NOT_EXIST_TAG
-		util.Res(c, http.StatusOK, code)
+		util.Res(c, http.StatusOK, code, nil)
 	}
-	util.Res(c, http.StatusOK, code)
+	util.Res(c, http.StatusOK, code, nil)
 }

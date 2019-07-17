@@ -1,24 +1,27 @@
 package v1
 
 import (
-	"github.com/gin-gonic/gin"
 	"blog/models"
-	"github.com/Unknwon/com"
 	"blog/pkg/e"
+	"blog/pkg/util"
+	"github.com/Unknwon/com"
+	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 //获取单个文章
 func GetArticle(c *gin.Context) {
-	id := com.StrTo(c.Param("id")).MustInt
+	id := com.StrTo(c.Param("id")).MustInt()
 	code := e.SUCCESS
-	models.GetArticle(id)
+	data := models.GetArticle(id)
+	util.Res(c, http.StatusOK, code, data)
 }
 
 //获取多个文章
 func GetArticles(c *gin.Context) {
 	code := e.SUCCESS
 	data := models.GetArticles()
-	
+
 }
 
 //新增文章

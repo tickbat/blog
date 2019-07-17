@@ -7,15 +7,20 @@ import (
 
 type Tag struct {
 	Model
-	Name 		*string 	`json:"name" binding:"required"`
-	CreatedBy 	*string 	`json:"create_by"`
-	ModifiedBy 	*string 	`json:"modified_by"`
-	State 		*int 		`json:"state" binding:"required,eq=1|eq=2"`
+	Name       *string `json:"name" binding:"required"`
+	CreatedBy  *string `json:"create_by"`
+	ModifiedBy *string `json:"modified_by"`
+	State      *int    `json:"state" binding:"required,eq=1|eq=2"`
+}
+
+type QueryTag struct {
+	Name  *string `json:"name"`
+	State *int    `json:"state" binding:"eq=1|eq=2"`
 }
 
 func (tag *Tag) BeforeCreate(scope *gorm.Scope) error {
-    scope.SetColumn("CreatedOn", time.Now().Unix())
-    return nil
+	scope.SetColumn("CreatedOn", time.Now().Unix())
+	return nil
 }
 
 func (tag *Tag) BeforeUpdate(scope *gorm.Scope) error {
@@ -32,7 +37,6 @@ func GetTagsTotal(maps interface{}) (count int) {
 	db.Model(&Tag{}).Where(maps).Count(&count)
 	return
 }
-
 
 func ExistTagByID(id int) bool {
 	var tag Tag
