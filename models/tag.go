@@ -10,12 +10,17 @@ type Tag struct {
 	Name       *string `json:"name" binding:"required"`
 	CreatedBy  *string `json:"create_by"`
 	ModifiedBy *string `json:"modified_by"`
-	State      *int    `json:"state" binding:"required,eq=1|eq=2"`
+	State      *int    `json:"state" binding:"eq=1|eq=2"`
 }
 
 type QueryTag struct {
-	Name  *string `json:"name"`
-	State *int    `json:"state" binding:"eq=1|eq=2"`
+	Name  *string `form:"name"`
+	State *int    `form:"state" binding:"eq=1|eq=2"`
+}
+
+func (q QueryTag) TableName() string {
+	
+	return "blog_tag"
 }
 
 func (tag *Tag) BeforeCreate(scope *gorm.Scope) error {
@@ -29,7 +34,7 @@ func (tag *Tag) BeforeUpdate(scope *gorm.Scope) error {
 }
 
 func GetTags(pageNum int, pageSize int, maps interface{}) (tags []Tag) {
-	db.Where(maps).Offset(pageNum).Limit(pageSize).Find(&tags)
+	db.Where(maps).Offset(pageNum).Limit(pageSize).Find(&Tag{})
 	return
 }
 

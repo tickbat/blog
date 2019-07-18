@@ -16,13 +16,14 @@ func GetTags(c *gin.Context) {
 	data := make(map[string]interface{})
 	tag := new(models.QueryTag)
 	code := e.SUCCESS
-	if err := c.ShouldBindJSON(tag); err != nil {
+	if err := c.ShouldBindQuery(tag); err != nil {
+		log.Printf("tag value: %+v\n", tag)
 		log.Printf("query tag parse json error: %v\n", err)
 		code = e.INVALID_PARAMS
 		util.Res(c, http.StatusBadRequest, code, nil)
 		return
 	}
-
+	log.Printf("tag value: %+v\n", tag)
 	data["lists"] = models.GetTags(util.GetPage(c), setting.Config.App.PageSize, tag)
 	data["total"] = models.GetTagsTotal(tag)
 	util.Res(c, http.StatusOK, code, data)
