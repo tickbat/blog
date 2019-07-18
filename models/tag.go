@@ -15,11 +15,11 @@ type Tag struct {
 
 type QueryTag struct {
 	Name  *string `form:"name"`
-	State *int    `form:"state" binding:"eq=1|eq=2"`
+	State *int    `form:"state" binding:"omitempty,eq=1|eq=2"`
 }
 
 func (q QueryTag) TableName() string {
-	
+
 	return "blog_tag"
 }
 
@@ -34,7 +34,7 @@ func (tag *Tag) BeforeUpdate(scope *gorm.Scope) error {
 }
 
 func GetTags(pageNum int, pageSize int, maps interface{}) (tags []Tag) {
-	db.Where(maps).Offset(pageNum).Limit(pageSize).Find(&Tag{})
+	db.Where(maps).Offset(pageNum).Limit(pageSize).Find(&tags)
 	return
 }
 

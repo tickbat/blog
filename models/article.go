@@ -1,32 +1,32 @@
 package models
 
 import (
-	"time"
 	"github.com/jinzhu/gorm"
+	"time"
 )
 
 type Article struct {
 	Model
-	TagId      *int `json:"tag_id"`
-	Tag		 	Tag `json:"-"`
+	TagId      *int    `json:"tag_id"`
+	Tag        Tag     `json:"tag" binding:"-"`
 	Title      *string `json:"title" binding:"required"`
 	Desc       *string `json:"desc"`
 	Content    *string `json:"content" binding:"required"`
-	CreateBy   *string `json:"create_by"`
+	CreatedBy  *string `json:"created_by"`
 	ModifiedBy *string `json:"modified_by"`
 	State      *int    `json:"state" binding:"required"`
 }
 
 type QueryArticle struct {
-	TagId      *string `json:"tag_id"`
-	Title      *string `json:"title"`
-	State      *int    `json:"state"`
+	TagId *string `json:"tag_id"`
+	Title *string `json:"title"`
+	State *int    `json:"state"`
 }
 
 func (article *Article) BeforeCreate(scope *gorm.Scope) error {
-    scope.SetColumn("CreatedOn", time.Now().Unix())
+	scope.SetColumn("CreatedOn", time.Now().Unix())
 
-    return nil
+	return nil
 }
 
 func (article *Article) BeforeUpdate(scope *gorm.Scope) error {
@@ -46,13 +46,13 @@ func GetArticles(page, size int, conditions QueryArticle) (Articles []Article) {
 	return
 }
 
-func GetArticlesTotal(conditions QueryArticle) (count int)  {
+func GetArticlesTotal(conditions QueryArticle) (count int) {
 	db.Model(&Article{}).Where(&conditions).Count(&count)
-	return 
+	return
 }
 
 func ExistArticleByID(id int) bool {
-	var  article Article
+	var article Article
 	db.Select("id").Where("id = ?", id).First(&article)
 	if article.ID == nil {
 		return false

@@ -17,14 +17,11 @@ func GetTags(c *gin.Context) {
 	tag := new(models.QueryTag)
 	code := e.SUCCESS
 	if err := c.ShouldBindQuery(tag); err != nil {
-		log.Printf("tag value: %+v\n", tag)
-		log.Printf("query tag parse json error: %v\n", err)
 		code = e.INVALID_PARAMS
 		util.Res(c, http.StatusBadRequest, code, nil)
 		return
 	}
-	log.Printf("tag value: %+v\n", tag)
-	data["lists"] = models.GetTags(util.GetPage(c), setting.Config.App.PageSize, tag)
+	data["list"] = models.GetTags(util.GetPage(c), setting.Config.App.PageSize, tag)
 	data["total"] = models.GetTagsTotal(tag)
 	util.Res(c, http.StatusOK, code, data)
 }
@@ -68,12 +65,11 @@ func EditTag(c *gin.Context) {
 func DeleteTag(c *gin.Context) {
 	id := com.StrTo(c.Param("id")).MustInt()
 	code := e.SUCCESS
-	if models.ExistTagByID(id) {
-		models.DeleteTag(id)
-		util.Res(c, http.StatusOK, code, nil)
-	} else {
+	if !models.ExistTagByID(id) {
 		code = e.ERROR_NOT_EXIST_TAG
 		util.Res(c, http.StatusOK, code, nil)
+		return
 	}
+	models.DeleteTag(id)
 	util.Res(c, http.StatusOK, code, nil)
 }
