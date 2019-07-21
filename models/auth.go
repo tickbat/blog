@@ -1,14 +1,15 @@
 package models
 
 type Auth struct {
-	ID *int `gorm:"primary_key" json:"id"`
+	ID       *int    `gorm:"primary_key" json:"id"`
 	Username *string `json:"username" binding:"required"`
 	Password *string `json:"password" binding:"required"`
 }
 
-func CheckAuth(auth Auth) bool {
-	db.Select("id").Where(auth).First(&auth)
-	if auth.ID == nil {
+func CheckAuth(conditions Auth) bool {
+	var auth Auth
+	db.Where(conditions).First(&auth)
+	if auth.ID == nil && auth.Password != conditions.Password {
 		return false
 	}
 	return true

@@ -66,15 +66,19 @@ func AddArticle(c *gin.Context) {
 func EditArticle(c *gin.Context) {
 	var article models.Article
 	code := e.SUCCESS
-	if err := c.BindJSON(article); err != nil {
+	if err := c.BindJSON(&article); err != nil {
 		log.Printf("add article parse json error: %v\n", err)
 		code = e.INVALID_PARAMS
 		util.Res(c, http.StatusOK, code, nil)
-	}
-	if models.ExistTagByID(*article.TagId) {
-		code = e.INVALID_PARAMS
-		util.Res(c, http.StatusBadRequest, code, nil)
 		return
+	}
+	println(article.TagId)
+	if article.TagId != nil {
+		if models.ExistTagByID(*article.TagId) {
+			code = e.INVALID_PARAMS
+			util.Res(c, http.StatusBadRequest, code, nil)
+			return
+		}
 	}
 	models.EditArticle(article)
 	util.Res(c, http.StatusOK, code, nil)

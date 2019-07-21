@@ -10,7 +10,7 @@ type Tag struct {
 	Name       *string `json:"name" binding:"required"`
 	CreatedBy  *string `json:"create_by"`
 	ModifiedBy *string `json:"modified_by"`
-	State      *int    `json:"state" binding:"eq=1|eq=2"`
+	State      *int    `json:"state" binding:"required,eq=1|eq=2"`
 }
 
 type QueryTag struct {

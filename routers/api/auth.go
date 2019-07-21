@@ -1,23 +1,17 @@
 package api
 
 import (
-	"log"
-	"net/http"
-
-	"github.com/gin-gonic/gin"
-	"github.com/astaxie/beego/validation"
+	"blog/models"
 	"blog/pkg/e"
 	"blog/pkg/util"
-	"blog/models"
+	"github.com/gin-gonic/gin"
+	"log"
+	"net/http"
 )
-
-type auth struct {
-	Username string `valid:"Required; MaxSize(50)"`
-	Password string `valid:"Required; MaxSize(50)"`
-}
 
 func GetAuth(c *gin.Context) {
 	var auth models.Auth
+	code := e.SUCCESS
 	if err := c.ShouldBindJSON(&auth); err != nil {
 		log.Printf("query auth parse json error: %v\n", err)
 		code = e.INVALID_PARAMS
@@ -29,11 +23,11 @@ func GetAuth(c *gin.Context) {
 		util.Res(c, http.StatusBadRequest, code, nil)
 		return
 	}
-	token, err := util.GenerateToken(username, password)
+	token, err := util.GenerateToken(*auth.Username)
 	if err != nil {
 		code = e.ERROR_AUTH_TOKEN
-		util.Res(c, http.SUCCESS, code, nil)
+		util.Res(c, http.StatusOK, code, err.Error())
 		return
 	}
-	util.Res(c, http.SUCCESS, code, token)
+	util.Res(c, http.StatusOK, code, token)
 }

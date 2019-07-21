@@ -1,21 +1,21 @@
 package routers
 
 import (
-	"blog/routers/api/v1"
-	"blog/routers/api"
-	"github.com/gin-gonic/gin"
+	"blog/middleware/jwt"
 	"blog/pkg/setting"
-	"gin-blog/middleware/jwt"
+	"blog/routers/api"
+	"blog/routers/api/v1"
+	"github.com/gin-gonic/gin"
 )
 
 func InitRouters() *gin.Engine {
 	r := gin.New()
-    r.Use(gin.Logger())
+	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
 	gin.SetMode(setting.Config.RunMode)
 
-	r.GET("/auth", api.GetAuth)
-	
+	r.POST("/auth", api.GetAuth)
+
 	apiv1 := r.Group("/api/v1")
 	apiv1.Use(jwt.JWT())
 	{
@@ -28,7 +28,7 @@ func InitRouters() *gin.Engine {
 		apiv1.GET("/articles", v1.GetArticles)
 		apiv1.POST("/article", v1.AddArticle)
 		apiv1.PUT("/article", v1.EditArticle)
-		apiv1.DELETE("/article", v1.DeleteArticle)
+		apiv1.DELETE("/article/:id", v1.DeleteArticle)
 	}
 	return r
 }

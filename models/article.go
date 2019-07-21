@@ -14,7 +14,7 @@ type Article struct {
 	Content    *string `json:"content" binding:"required"`
 	CreatedBy  *string `json:"created_by"`
 	ModifiedBy *string `json:"modified_by"`
-	State      *int    `json:"state" binding:"required"`
+	State      *int    `json:"state" binding:"required,eq=1|eq=2"`
 }
 
 type QueryArticle struct {
