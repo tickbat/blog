@@ -7,8 +7,8 @@ import (
 	"blog/pkg/util"
 	"github.com/Unknwon/com"
 	"github.com/gin-gonic/gin"
-	"log"
 	"net/http"
+	"blog/pkg/logging"
 )
 
 //获取单个文章
@@ -30,13 +30,13 @@ func GetArticles(c *gin.Context) {
 	var article models.QueryArticle
 	code := e.SUCCESS
 	if err := c.ShouldBindQuery(&article); err != nil {
-		log.Printf("query article parse json error: %v\n", err)
+		logging.Info("get articles parse json error: " +  err.Error())
 		code = e.INVALID_PARAMS
 		util.Res(c, http.StatusOK, code, nil)
 		return
 	}
 
-	data["list"] = models.GetArticles(util.GetPage(c), setting.Config.App.PageSize, article)
+	data["list"] = models.GetArticles(util.GetPage(c), setting.App.PageSize, article)
 	data["total"] = models.GetArticlesTotal(article)
 	util.Res(c, http.StatusOK, code, data)
 }
@@ -46,7 +46,7 @@ func AddArticle(c *gin.Context) {
 	var article models.Article
 	code := e.SUCCESS
 	if err := c.ShouldBindJSON(&article); err != nil {
-		log.Printf("add article parse json error: %v\n", err)
+		logging.Info("add article parse json error: " +  err.Error())
 		code = e.INVALID_PARAMS
 		util.Res(c, http.StatusOK, code, nil)
 		return
@@ -67,7 +67,7 @@ func EditArticle(c *gin.Context) {
 	var article models.Article
 	code := e.SUCCESS
 	if err := c.BindJSON(&article); err != nil {
-		log.Printf("add article parse json error: %v\n", err)
+		logging.Info("edit article parse json error: " +  err.Error())
 		code = e.INVALID_PARAMS
 		util.Res(c, http.StatusOK, code, nil)
 		return

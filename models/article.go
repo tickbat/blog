@@ -1,38 +1,26 @@
 package models
 
 import (
-	"github.com/jinzhu/gorm"
 	"time"
 )
 
 type Article struct {
 	Model
-	TagId      *int    `json:"tag_id"`
-	Tag        Tag     `json:"tag" binding:"-"`
-	Title      *string `json:"title" binding:"required"`
-	Desc       *string `json:"desc"`
-	Content    *string `json:"content" binding:"required"`
-	CreatedBy  *string `json:"created_by"`
-	ModifiedBy *string `json:"modified_by"`
-	State      *int    `json:"state" binding:"required,eq=1|eq=2"`
+	TagId      *int    		`json:"tag_id"`
+	Tag        *Tag     	`json:"tag" binding:"-"`
+	Title      *string 		`json:"title" binding:"required"`
+	Desc       *string 		`json:"desc"`
+	Content    *string 		`json:"content" binding:"required"`
+	CreatedBy  *string 		`json:"created_by"`
+	ModifiedBy *string 		`json:"modified_by"`
+	State      *int    		`json:"state" binding:"required,eq=1|eq=2"`
+	DeletedAt  *time.Time 	`json:"-"`
 }
 
 type QueryArticle struct {
 	TagId *string `json:"tag_id"`
 	Title *string `json:"title"`
 	State *int    `json:"state"`
-}
-
-func (article *Article) BeforeCreate(scope *gorm.Scope) error {
-	scope.SetColumn("CreatedOn", time.Now().Unix())
-
-	return nil
-}
-
-func (article *Article) BeforeUpdate(scope *gorm.Scope) error {
-	scope.SetColumn("ModifiedOn", time.Now().Unix())
-
-	return nil
 }
 
 func GetArticle(id int) (article Article) {
@@ -72,4 +60,11 @@ func DeleteArticle(id int) {
 	var article Article
 	article.ID = &id
 	db.Delete(&article)
+}
+
+func ClearAllArticle() error {
+	if err := db.Unscoped().Where("deleted_at is not null").Delete(&Article{}).Error; err != nil {
+		return err
+	}
+	return nil
 }

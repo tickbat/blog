@@ -1,10 +1,5 @@
 package models
 
-import (
-	"github.com/jinzhu/gorm"
-	"time"
-)
-
 type Tag struct {
 	Model
 	Name       *string `json:"name" binding:"required"`
@@ -21,16 +16,6 @@ type QueryTag struct {
 func (q QueryTag) TableName() string {
 
 	return "blog_tag"
-}
-
-func (tag *Tag) BeforeCreate(scope *gorm.Scope) error {
-	scope.SetColumn("CreatedOn", time.Now().Unix())
-	return nil
-}
-
-func (tag *Tag) BeforeUpdate(scope *gorm.Scope) error {
-	scope.SetColumn("ModifiedOn", time.Now().Unix())
-	return nil
 }
 
 func GetTags(pageNum int, pageSize int, maps interface{}) (tags []Tag) {
@@ -66,4 +51,11 @@ func DeleteTag(id int) {
 	tag := new(Tag)
 	tag.ID = &id
 	db.Delete(tag)
+}
+
+func ClearAllTag() error {
+	if err := db.Where("deleted_at != null").Delete(&Tag{}).Error; err != nil {
+		return err
+	}
+	return nil
 }

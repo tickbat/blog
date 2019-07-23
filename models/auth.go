@@ -14,3 +14,4 @@ func CheckAuth(conditions Auth) bool {
 	}
 	return true
 }
+

@@ -17,3 +17,6 @@
 # vscode
 /.history/
 /.vscode/
+
+# runtime
+/runtime/

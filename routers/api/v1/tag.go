@@ -7,21 +7,21 @@ import (
 	"blog/pkg/util"
 	"github.com/Unknwon/com"
 	"github.com/gin-gonic/gin"
-	"log"
+	"blog/pkg/logging"
 	"net/http"
 )
 
-// 获取多个文章标签
 func GetTags(c *gin.Context) {
 	data := make(map[string]interface{})
 	tag := new(models.QueryTag)
 	code := e.SUCCESS
 	if err := c.ShouldBindQuery(tag); err != nil {
+		logging.Info("get tags parse json error: " +  err.Error())
 		code = e.INVALID_PARAMS
 		util.Res(c, http.StatusBadRequest, code, nil)
 		return
 	}
-	data["list"] = models.GetTags(util.GetPage(c), setting.Config.App.PageSize, tag)
+	data["list"] = models.GetTags(util.GetPage(c), setting.App.PageSize, tag)
 	data["total"] = models.GetTagsTotal(tag)
 	util.Res(c, http.StatusOK, code, data)
 }
@@ -31,7 +31,7 @@ func AddTag(c *gin.Context) {
 	var tag models.Tag
 	code := e.SUCCESS
 	if err := c.ShouldBindJSON(&tag); err != nil {
-		log.Printf("add tag parse json error: %v\n", err)
+		logging.Info("add tag parse json error: " +  err.Error())
 		code = e.INVALID_PARAMS
 		util.Res(c, http.StatusBadRequest, code, nil)
 	} else {
@@ -45,7 +45,7 @@ func EditTag(c *gin.Context) {
 	var tag models.Tag
 	var code = e.SUCCESS
 	if err := c.ShouldBindJSON(&tag); err != nil {
-		log.Printf("edit tag parse json error: %v\n", err)
+		logging.Info("edit tag parse json error: " +  err.Error())
 		code := e.INVALID_PARAMS
 		util.Res(c, http.StatusBadRequest, code, nil)
 		return

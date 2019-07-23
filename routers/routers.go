@@ -12,7 +12,7 @@ func InitRouters() *gin.Engine {
 	r := gin.New()
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
-	gin.SetMode(setting.Config.RunMode)
+	gin.SetMode(setting.App.RunMode)
 
 	r.POST("/auth", api.GetAuth)
 

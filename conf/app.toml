@@ -1,7 +1,5 @@
-#debug or release
-RUN_MODE = "debug"
-
 [app]
+RUN_MODE = "debug"
 PAGE_SIZE = 10
 JWT_SECRET = "23347$040412"
 
@@ -17,3 +15,9 @@ PASSWORD = "root"
 HOST = "127.0.0.1:3306"
 NAME = "blog"
 TABLE_PREFIX = "blog_"
+
+[log]
+LogSavePath = "logs/"
+LogSaveName = "log"
+LogFileExt = "log"
+TimeFormat = "20060102"
