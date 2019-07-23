@@ -11,40 +11,50 @@ var (
 	App 		app
 	Server 		server
 	Database 	database
+	Log			log
 )
 
 func init() {
 	if _, err := toml.DecodeFile("conf/app.toml", &conf); err != nil {
 		logging.Error("decode config error: %v" + err.Error())
 	}
-	App 		= conf.App
-	Server 		= conf.Server
-	Database 	= conf.Database
+	App 		= conf.app
+	Server 		= conf.server
+	Database 	= conf.database
+	Log 		= conf.log
 }
 
 type config struct {
-	App     	app
-	Server 		server
-	Database 	database
+	app     	app
+	server 		server
+	database 	database
+	log 		log
 }
 
 type app struct {
-	RunMode string `toml:"RUN_MODE"`
-	PageSize  int    `toml:"PAGE_SIZE"`
-	JwtSecret string `toml:"JWT_SECRET"`
+	RunMode string
+	PageSize  int
+	JwtSecret string
 }
 
 type server struct {
-	HttpPort     int 			`toml:"HTTP_PORT"`
-	ReadTimeout  time.Duration `toml:"READ_TIMEOUT"`
-	WriteTimeout time.Duration `toml:"WRITE_TIMEOUT"`
+	HttpPort     int
+	ReadTimeout  time.Duration
+	WriteTimeout time.Duration
 }
 
 type database struct {
-	Type        string `toml:"TYPE"`
-	User        string `toml:"USER"`
-	Password    string `toml:"PASSWORD"`
-	Host        string `toml:"HOST"`
-	Name        string `toml:"NAME"`
-	TablePrefix string `toml:"TABLE_PREFIX"`
+	Type        string
+	User        string
+	Password    string
+	Host        string
+	Name        string
+	TablePrefix string
+}
+
+type log struct {
+	LogSavePath	string `toml:"LOG_SAVE_PATH"`
+	LogSaveName	string `toml:"LOG_SAVE_NAME"`
+	LogFileExt	string `toml:"LOG_FILE_EXT"`
+	TimeFormat	string `toml:"TIME_FORMAT"`
 }
