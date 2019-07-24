@@ -1,18 +1,18 @@
 package setting
 
 import (
-	"time"
 	"github.com/BurntSushi/toml"
 	"log"
+	"time"
 )
 
 var (
-	conf 		config
-	App 		app
-	Server 		server
-	Database 	database
-	Log			logs
-	Image		image
+	conf     config
+	App      app
+	Server   server
+	Database database
+	Log      logs
+	Image    image
 )
 
 func init() {
@@ -23,23 +23,23 @@ func init() {
 
 	conf.Image.MaxSize = conf.Image.MaxSize * 1024 * 1024
 
-	App 		= conf.App
-	Server 		= conf.Server
-	Database 	= conf.Database
-	Log 		= conf.Log
-	Image 		= conf.Image
+	App = conf.App
+	Server = conf.Server
+	Database = conf.Database
+	Log = conf.Log
+	Image = conf.Image
 }
 
 type config struct {
-	App     	app
-	Server 		server
-	Database 	database
-	Log 		logs
-	Image		image
+	App      app
+	Server   server
+	Database database
+	Log      logs
+	Image    image
 }
 
 type app struct {
-	RunMode string
+	RunMode   string
 	PageSize  int
 	JwtSecret string
 }
@@ -60,15 +60,15 @@ type database struct {
 }
 
 type logs struct {
-	LogSavePath	string
-	LogSaveName	string
-	LogFileExt	string
-	TimeFormat	string
+	LogSavePath string
+	LogSaveName string
+	LogFileExt  string
+	TimeFormat  string
 }
 
 type image struct {
-	PrefixUrl	string
-	SavePath	string
-	AllowExts  	[]string
-	MaxSize 	int
+	PrefixUrl string
+	SavePath  string
+	AllowExts []string
+	MaxSize   int
 }

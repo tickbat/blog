@@ -1,12 +1,13 @@
 package main
 
 import (
+	_ "blog/cron"
+	"blog/pkg/logging"
 	"blog/pkg/setting"
-	"fmt"
 	"blog/routers"
-	"time"
+	"fmt"
 	"net/http"
-	_"blog/cron"
+	"time"
 )
 
 func main() {
@@ -18,5 +19,7 @@ func main() {
 		WriteTimeout:   setting.Server.WriteTimeout * time.Second,
 		MaxHeaderBytes: 1 << 20,
 	}
-	s.ListenAndServe()
+	if err := s.ListenAndServe(); err != nil {
+		logging.Fatal("ListenAndServe error: ", err.Error())
+	}
 }
