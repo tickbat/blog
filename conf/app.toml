@@ -1,23 +1,30 @@
 [app]
-RunMode = "debug"
-PageSize = 10
-JwtSecret = "23347$040412"
+runMode = "debug"
+pageSize = 10
+jwtSecret = "23347$040412"
 
 [server]
-HttpPort = 8000
-ReadTimeout = 60
-WriteTimeout = 60
+httpPort = 8000
+readTimeout = 60
+writeTimeout = 60
 
 [database]
-Type = "mysql"
-User = "root"
-Password = "root"
-Host = "127.0.0.1:3306"
-Name = "blog"
-TablePrefix = "blog_"
+type = "mysql"
+user = "root"
+password = "root"
+host = "127.0.0.1:3306"
+name = "blog"
+tablePrefix = "blog_"
 
 [log]
-LogSavePath = "logs/"
-LogSaveName = "log"
-LogFileExt = "log"
-TimeFormat = "20060102"
+logSavePath = "runtime/logs/"
+logSaveName = "log"
+logFileExt = "log"
+timeFormat = "20060102"
+
+[image]
+prefixUrl = "http://127.0.0.1:8000"
+savePath = "upload/images/"
+allowExts = [".jpg", ".jpeg", ".png"]
+# MB
+maxSize = 5 

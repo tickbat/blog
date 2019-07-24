@@ -3,7 +3,7 @@ package setting
 import (
 	"time"
 	"github.com/BurntSushi/toml"
-	"blog/pkg/logging"
+	"log"
 )
 
 var (
@@ -11,24 +11,31 @@ var (
 	App 		app
 	Server 		server
 	Database 	database
-	Log			log
+	Log			logs
+	Image		image
 )
 
 func init() {
+	// 里面的字段开头必须大写才能decode，解析的时候不区分大小写
 	if _, err := toml.DecodeFile("conf/app.toml", &conf); err != nil {
-		logging.Error("decode config error: %v" + err.Error())
+		log.Fatal("decode config error: %v" + err.Error())
 	}
-	App 		= conf.app
-	Server 		= conf.server
-	Database 	= conf.database
-	Log 		= conf.log
+
+	conf.Image.MaxSize = conf.Image.MaxSize * 1024 * 1024
+
+	App 		= conf.App
+	Server 		= conf.Server
+	Database 	= conf.Database
+	Log 		= conf.Log
+	Image 		= conf.Image
 }
 
 type config struct {
-	app     	app
-	server 		server
-	database 	database
-	log 		log
+	App     	app
+	Server 		server
+	Database 	database
+	Log 		logs
+	Image		image
 }
 
 type app struct {
@@ -52,9 +59,16 @@ type database struct {
 	TablePrefix string
 }
 
-type log struct {
-	LogSavePath	string `toml:"LOG_SAVE_PATH"`
-	LogSaveName	string `toml:"LOG_SAVE_NAME"`
-	LogFileExt	string `toml:"LOG_FILE_EXT"`
-	TimeFormat	string `toml:"TIME_FORMAT"`
+type logs struct {
+	LogSavePath	string
+	LogSaveName	string
+	LogFileExt	string
+	TimeFormat	string
+}
+
+type image struct {
+	PrefixUrl	string
+	SavePath	string
+	AllowExts  	[]string
+	MaxSize 	int
 }
