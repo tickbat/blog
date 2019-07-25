@@ -11,13 +11,14 @@ import (
 
 func UploadImage(c *gin.Context) {
 	code := e.SUCCESS
+	status := http.StatusOK
 	data := make(map[string]string)
 
 	file, image, err := c.Request.FormFile("image")
 	if err != nil {
-		logging.Warn(err)
+		logging.Warn("FormFile error:",  err)
 		code = e.ERROR
-		util.Res(c, http.StatusOK, code, nil)
+		util.Res(c, status, code, nil)
 		return
 	}
 
@@ -29,19 +30,22 @@ func UploadImage(c *gin.Context) {
 		src := savePath + imageName
 		if !upload.CheckImageExt(imageName) || !upload.CheckImageSize(file) {
 			code = e.ERROR_UPLOAD_CHECK_IMAGE_FORMAT
+			status = http.StatusBadRequest
 		} else {
 			err := upload.CheckImage(savePath)
 			if err != nil {
 				logging.Warn(err)
 				code = e.ERROR_UPLOAD_CHECK_IMAGE_FAIL
+				status = http.StatusInternalServerError
 			} else if err := c.SaveUploadedFile(image, src); err != nil {
 				logging.Warn(err)
 				code = e.ERROR_UPLOAD_SAVE_IMAGE_FAIL
+				status = http.StatusInternalServerError
 			} else {
 				data["image_url"] = upload.GetImageFullUrl(imageName)
 			}
 		}
 	}
 
-	util.Res(c, http.StatusOK, code, data)
+	util.Res(c, status, code, data)
 }

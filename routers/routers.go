@@ -6,6 +6,8 @@ import (
 	"blog/routers/api"
 	"blog/routers/api/v1"
 	"github.com/gin-gonic/gin"
+	"net/http"
+	"blog/pkg/upload"
 )
 
 func InitRouters() *gin.Engine {
@@ -13,9 +15,10 @@ func InitRouters() *gin.Engine {
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
 	gin.SetMode(setting.App.RunMode)
-
+	println("http.dir:", http.Dir(""))
 	r.POST("/auth", api.GetAuth)
 	r.POST("/upload", api.UploadImage)
+	r.StaticFS("/upload/images", http.Dir(upload.GetImagePath()))
 
 	apiv1 := r.Group("/api/v1")
 	apiv1.Use(jwt.JWT())
