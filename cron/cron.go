@@ -1,14 +1,15 @@
 package cron
 
 import (
-    "blog/pkg/logging"
-    "github.com/robfig/cron"
-    "blog/models"
+	"blog/models"
+	"blog/pkg/logging"
+	"github.com/robfig/cron"
 )
 
 const (
-	clearTime =  "0 0 12 * * *"
+	clearTime = "0 0 12 * * *"
 )
+
 func init() {
 	logging.Info("start cron")
 	c := cron.New()

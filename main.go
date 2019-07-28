@@ -2,6 +2,7 @@ package main
 
 import (
 	_ "blog/cron"
+	_ "blog/pkg/gredis"
 	"blog/pkg/logging"
 	"blog/pkg/setting"
 	"blog/routers"

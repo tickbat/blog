@@ -7,15 +7,16 @@ import (
 )
 
 var (
-	conf     config
 	App      app
 	Server   server
 	Database database
 	Log      logs
 	Image    image
+	Redis    redis
 )
 
 func init() {
+	var conf config
 	// 里面的字段开头必须大写才能decode，解析的时候不区分大小写
 	if _, err := toml.DecodeFile("conf/app.toml", &conf); err != nil {
 		log.Fatal("decode config error: %v" + err.Error())
@@ -28,6 +29,7 @@ func init() {
 	Database = conf.Database
 	Log = conf.Log
 	Image = conf.Image
+	Redis = conf.Redis
 }
 
 type config struct {
@@ -36,6 +38,7 @@ type config struct {
 	Database database
 	Log      logs
 	Image    image
+	Redis    redis
 }
 
 type app struct {
@@ -71,4 +74,9 @@ type image struct {
 	SavePath  string
 	AllowExts []string
 	MaxSize   int
+}
+
+type redis struct {
+	Password string
+	Host     string
 }

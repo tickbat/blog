@@ -8,10 +8,9 @@ type Auth struct {
 
 func CheckAuth(conditions Auth) bool {
 	var auth Auth
-	db.Where(conditions).First(&auth)
+	Db.Where(conditions).First(&auth)
 	if auth.ID == nil && auth.Password != conditions.Password {
 		return false
 	}
 	return true
 }
-

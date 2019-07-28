@@ -27,4 +27,9 @@ prefixUrl = "http://127.0.0.1:8000"
 savePath = "upload/images/"
 allowExts = [".jpg", ".jpeg", ".png"]
 # MB
-maxSize = 5 
+maxSize = 5
+
+[redis]
+host = "127.0.0.1:6379"
+password = "root"
+

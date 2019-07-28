@@ -2,13 +2,14 @@ package v1
 
 import (
 	"blog/models"
+	"blog/models/handler"
 	"blog/pkg/e"
+	"blog/pkg/logging"
 	"blog/pkg/setting"
 	"blog/pkg/util"
 	"github.com/Unknwon/com"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"blog/pkg/logging"
 )
 
 //获取单个文章
@@ -30,7 +31,7 @@ func GetArticles(c *gin.Context) {
 	var article models.QueryArticle
 	code := e.SUCCESS
 	if err := c.ShouldBindQuery(&article); err != nil {
-		logging.Info("get articles parse json error: " +  err.Error())
+		logging.Info("get articles parse json error: " + err.Error())
 		code = e.INVALID_PARAMS
 		util.Res(c, http.StatusOK, code, nil)
 		return
@@ -46,13 +47,13 @@ func AddArticle(c *gin.Context) {
 	var article models.Article
 	code := e.SUCCESS
 	if err := c.ShouldBindJSON(&article); err != nil {
-		logging.Info("add article parse json error: " +  err.Error())
+		logging.Info("add article parse json error: " + err.Error())
 		code = e.INVALID_PARAMS
 		util.Res(c, http.StatusOK, code, nil)
 		return
 	}
 	if article.TagId != nil {
-		if !models.ExistTagByID(*article.TagId) {
+		if !models_handler.ExistTagByID(*article.TagId) {
 			code = e.ERROR_NOT_EXIST_TAG
 			util.Res(c, http.StatusBadRequest, code, nil)
 			return
@@ -67,14 +68,14 @@ func EditArticle(c *gin.Context) {
 	var article models.Article
 	code := e.SUCCESS
 	if err := c.BindJSON(&article); err != nil {
-		logging.Info("edit article parse json error: " +  err.Error())
+		logging.Info("edit article parse json error: " + err.Error())
 		code = e.INVALID_PARAMS
 		util.Res(c, http.StatusOK, code, nil)
 		return
 	}
 	println(article.TagId)
 	if article.TagId != nil {
-		if models.ExistTagByID(*article.TagId) {
+		if models_handler.ExistTagByID(*article.TagId) {
 			code = e.INVALID_PARAMS
 			util.Res(c, http.StatusBadRequest, code, nil)
 			return

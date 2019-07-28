@@ -33,7 +33,9 @@ CREATE TABLE `blog_article` (
 CREATE TABLE `blog_auth` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `username` varchar(50) DEFAULT '' COMMENT '账号',
+  `nickname` varchar(100) DEFAULT '' COMMENT '昵称',
   `password` varchar(50) DEFAULT '' COMMENT '密码',
+  `avatar` varchar(255) DEFAULT '' COMMENT '头像',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

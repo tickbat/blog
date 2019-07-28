@@ -2,27 +2,34 @@ package v1
 
 import (
 	"blog/models"
+	"blog/models/handler"
 	"blog/pkg/e"
-	"blog/pkg/setting"
+	"blog/pkg/logging"
 	"blog/pkg/util"
+	"blog/service/tag"
 	"github.com/Unknwon/com"
 	"github.com/gin-gonic/gin"
-	"blog/pkg/logging"
 	"net/http"
 )
 
 func GetTags(c *gin.Context) {
-	data := make(map[string]interface{})
 	tag := new(models.QueryTag)
 	code := e.SUCCESS
+
 	if err := c.ShouldBindQuery(tag); err != nil {
-		logging.Info("get tags parse json error: " +  err.Error())
+		logging.Info("get tags parse json error:", err)
 		code = e.INVALID_PARAMS
 		util.Res(c, http.StatusBadRequest, code, nil)
 		return
 	}
-	data["list"] = models.GetTags(util.GetPage(c), setting.App.PageSize, tag)
-	data["total"] = models.GetTagsTotal(tag)
+
+	data, err := tag_service.GetTags(tag)
+	if err != nil {
+		logging.Info("tag_service.GetTags error:", err)
+		code = e.ERROR
+		util.Res(c, http.StatusInternalServerError, code, nil)
+		return
+	}
 	util.Res(c, http.StatusOK, code, data)
 }
 
@@ -31,11 +38,11 @@ func AddTag(c *gin.Context) {
 	var tag models.Tag
 	code := e.SUCCESS
 	if err := c.ShouldBindJSON(&tag); err != nil {
-		logging.Info("add tag parse json error: " +  err.Error())
+		logging.Info("add tag parse json error: " + err.Error())
 		code = e.INVALID_PARAMS
 		util.Res(c, http.StatusBadRequest, code, nil)
 	} else {
-		models.AddTag(tag)
+		models_handler.AddTag(tag)
 		util.Res(c, http.StatusOK, code, nil)
 	}
 }
@@ -45,15 +52,15 @@ func EditTag(c *gin.Context) {
 	var tag models.Tag
 	var code = e.SUCCESS
 	if err := c.ShouldBindJSON(&tag); err != nil {
-		logging.Info("edit tag parse json error: " +  err.Error())
+		logging.Info("edit tag parse json error: " + err.Error())
 		code := e.INVALID_PARAMS
 		util.Res(c, http.StatusBadRequest, code, nil)
 		return
 	}
 	id := com.StrTo(c.Param("id")).MustInt()
 	tag.ID = &id
-	if models.ExistTagByID(id) {
-		models.EditTag(tag)
+	if models_handler.ExistTagByID(id) {
+		models_handler.EditTag(tag)
 		util.Res(c, http.StatusOK, code, nil)
 	} else {
 		code = e.ERROR_NOT_EXIST_TAG
@@ -65,11 +72,11 @@ func EditTag(c *gin.Context) {
 func DeleteTag(c *gin.Context) {
 	id := com.StrTo(c.Param("id")).MustInt()
 	code := e.SUCCESS
-	if !models.ExistTagByID(id) {
+	if !models_handler.ExistTagByID(id) {
 		code = e.ERROR_NOT_EXIST_TAG
 		util.Res(c, http.StatusOK, code, nil)
 		return
 	}
-	models.DeleteTag(id)
+	models_handler.DeleteTag(id)
 	util.Res(c, http.StatusOK, code, nil)
 }

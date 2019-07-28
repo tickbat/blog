@@ -31,43 +31,43 @@ const (
 
 func init() {
 	filePath := getLogFilePath()
-    fileName := getLogFileName()
-    F, err := openLogFile(fileName, filePath)
-    if err != nil {
-        log.Fatalln(err)
-    }
+	fileName := getLogFileName()
+	F, err := openLogFile(fileName, filePath)
+	if err != nil {
+		log.Fatalln(err)
+	}
 
 	logger = log.New(F, DefaultPrefix, log.LstdFlags)
 }
 
 func Debug(v ...interface{}) {
 	setPrefix(DEBUG)
-	logger.Println(v...)
 	log.Println(v...)
+	logger.Println(v...)
 }
 
 func Info(v ...interface{}) {
 	setPrefix(INFO)
-	logger.Println(v...)
 	log.Println(v...)
+	logger.Println(v...)
 }
 
 func Warn(v ...interface{}) {
 	setPrefix(WARNING)
-	logger.Println(v...)
 	log.Println(v...)
+	logger.Println(v...)
 }
 
 func Error(v ...interface{}) {
 	setPrefix(ERROR)
-	logger.Println(v...)
 	log.Println(v...)
+	logger.Println(v...)
 }
 
 func Fatal(v ...interface{}) {
 	setPrefix(FATAL)
-	logger.Fatalln(v...)
 	log.Println(v...)
+	logger.Fatalln(v...)
 }
 
 func setPrefix(level Level) {
