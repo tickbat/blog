@@ -14,11 +14,11 @@ import (
 
 func GetTags(c *gin.Context) {
 	tag := new(models.QueryTag)
-	code := e.SUCCESS
+	r := e.SUCCESS
 
 	if err := c.ShouldBindQuery(tag); err != nil {
 		logging.Info("get tags parse json error:", err)
-		code = e.INVALID_PARAMS
+		code := e.INVALID_PARAMS
 		util.Res(c, http.StatusBadRequest, code, nil)
 		return
 	}
@@ -26,11 +26,11 @@ func GetTags(c *gin.Context) {
 	data, err := service.GetTags(tag)
 	if err != nil {
 		logging.Info("tag_service.GetTags error:", err)
-		code = e.ERROR
-		util.Res(c, http.StatusInternalServerError, code, nil)
+		r = e.ERROR
+		util.Res(c, http.StatusInternalServerError, r, nil)
 		return
 	}
-	util.Res(c, http.StatusOK, code, data)
+	util.Res(c, http.StatusOK, r, data)
 }
 
 // 新增文章标签
@@ -43,7 +43,7 @@ func AddTag(c *gin.Context) {
 		util.Res(c, http.StatusBadRequest, code, nil)
 		return
 	}
-	if err := models_handler.AddTag(tag); err != nil {
+	if err := service.AddTag(tag); err != nil {
 		code = e.ERROR
 		util.Res(c, http.StatusInternalServerError, code, nil)
 		return
@@ -54,7 +54,7 @@ func AddTag(c *gin.Context) {
 // 修改文章标签
 func EditTag(c *gin.Context) {
 	var tag models.Tag
-	code := e.SUCCESS
+	r := e.SUCCESS
 	if err := c.ShouldBindJSON(&tag); err != nil {
 		logging.Info("edit tag parse json error: " + err.Error())
 		code := e.INVALID_PARAMS
@@ -63,29 +63,31 @@ func EditTag(c *gin.Context) {
 	}
 	id, err := com.StrTo(c.Param("id")).Int()
 	if err != nil {
-		code = e.INVALID_PARAMS
-		util.Res(c, http.StatusBadRequest, code, nil)
+		r = e.INVALID_PARAMS
+		util.Res(c, http.StatusBadRequest, r, nil)
+		return
 	}
 	tag.ID = id
-	service.EditTag(tag)
-	// if models_handler.ExistTagByID(id) {
-	// 	models_handler.EditTag(tag)
-	// 	util.Res(c, http.StatusOK, code, nil)
-	// } else {
-	// 	code = e.ERROR_NOT_EXIST_TAG
-	// 	util.Res(c, http.StatusOK, code, nil)
-	// }
+	err = service.EditTag(tag)
+	if err == e.ERROR_NOT_EXIST_TAG {
+		util.Res(c, http.StatusBadRequest, err, nil)
+		return
+	}
 }
 
 // 删除文章标签
 func DeleteTag(c *gin.Context) {
 	id := com.StrTo(c.Param("id")).MustInt()
-	code := e.SUCCESS
+	r := e.SUCCESS
 	if !models_handler.ExistTagByID(id) {
-		code = e.ERROR_NOT_EXIST_TAG
-		util.Res(c, http.StatusOK, code, nil)
+		r = e.ERROR_NOT_EXIST_TAG
+		util.Res(c, http.StatusOK, r, nil)
 		return
 	}
-	models_handler.DeleteTag(id)
-	util.Res(c, http.StatusOK, code, nil)
+	if err := service.DeleteTag(id); err != nil {
+		r = e.ERROR
+		util.Res(c, http.StatusInternalServerError, r, nil)
+		return
+	}
+	util.Res(c, http.StatusOK, r, nil)
 }

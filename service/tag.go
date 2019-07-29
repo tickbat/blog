@@ -3,6 +3,7 @@ package service
 import (
 	"blog/models"
 	"blog/models/handler"
+	"blog/pkg/e"
 )
 
 func GetTags(tag *models.QueryTag) (map[string]interface{}, error) {
@@ -17,23 +18,19 @@ func GetTags(tag *models.QueryTag) (map[string]interface{}, error) {
 	return data, err
 }
 
-
 func AddTag(tag models.Tag) error {
 	return models_handler.AddTag(tag)
 }
 
 func EditTag(tag models.Tag) error {
-	if !models_handler.ExistTagByID(id) {
+	if !models_handler.ExistTagByID(tag.ID) {
 		return e.ERROR_NOT_EXIST_TAG
 	}
 	return models_handler.EditTag(tag)
-	
 }
 
-func DeleteTag(id int) {
-	tag := new(models.Tag)
-	tag.ID = id
-	models.Db.Delete(tag)
+func DeleteTag(id int) error {
+	return models_handler.DeleteTag(id)
 }
 
 func ClearAllTag() error {

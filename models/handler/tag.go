@@ -4,9 +4,9 @@ import (
 	"blog/models"
 	"blog/models/cache"
 	"blog/pkg/gredis"
+	"blog/pkg/logging"
 	"encoding/json"
 	"github.com/go-redis/redis"
-	"blog/pkg/logging"
 )
 
 func GetTags(tag *models.QueryTag) ([]models.QueryTag, error) {
@@ -30,7 +30,7 @@ func GetTagsTotal(maps interface{}) (count int) {
 func ExistTagByID(id int) bool {
 	var tag models.Tag
 	models.Db.Select("id").Where("id = ?", id).First(&tag)
-	if tag.ID == nil {
+	if tag.ID == 0 {
 		return false
 	}
 
@@ -45,15 +45,22 @@ func AddTag(tag models.Tag) error {
 	return nil
 }
 
-func EditTag(tag models.Tag) {
-	models.Db.Model(&tag).Update(tag)
-	
+func EditTag(tag models.Tag) error {
+	if err := models.Db.Model(&tag).Update(tag).Error; err != nil {
+		logging.Error("edit tag from db error:", err)
+		return err
+	}
+	return nil
 }
 
-func DeleteTag(id int) {
+func DeleteTag(id int) error {
 	tag := new(models.Tag)
-	tag.ID = &id
-	models.Db.Delete(tag)
+	tag.ID = id
+	if err := models.Db.Delete(tag).Error; err != nil {
+		logging.Error("delete tag from db error:", err)
+		return err
+	}
+	return nil
 }
 
 func ClearAllTag() error {
