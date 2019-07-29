@@ -2,6 +2,7 @@ package models
 
 import (
 	"time"
+	"errors"
 )
 
 type Article struct {
@@ -43,7 +44,7 @@ func GetArticlesTotal(conditions QueryArticle) (count int) {
 func ExistArticleByID(id int) bool {
 	var article Article
 	Db.Select("id").Where("id = ?", id).First(&article)
-	if article.ID == nil {
+	if article.ID == 0 {
 		return false
 	}
 	return true

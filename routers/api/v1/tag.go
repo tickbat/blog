@@ -6,7 +6,7 @@ import (
 	"blog/pkg/e"
 	"blog/pkg/logging"
 	"blog/pkg/util"
-	"blog/service/tag"
+	"blog/service"
 	"github.com/Unknwon/com"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -23,7 +23,7 @@ func GetTags(c *gin.Context) {
 		return
 	}
 
-	data, err := tag_service.GetTags(tag)
+	data, err := service.GetTags(tag)
 	if err != nil {
 		logging.Info("tag_service.GetTags error:", err)
 		code = e.ERROR
@@ -41,31 +41,40 @@ func AddTag(c *gin.Context) {
 		logging.Info("add tag parse json error: " + err.Error())
 		code = e.INVALID_PARAMS
 		util.Res(c, http.StatusBadRequest, code, nil)
-	} else {
-		models_handler.AddTag(tag)
-		util.Res(c, http.StatusOK, code, nil)
+		return
 	}
+	if err := models_handler.AddTag(tag); err != nil {
+		code = e.ERROR
+		util.Res(c, http.StatusInternalServerError, code, nil)
+		return
+	}
+	util.Res(c, http.StatusOK, code, nil)
 }
 
 // 修改文章标签
 func EditTag(c *gin.Context) {
 	var tag models.Tag
-	var code = e.SUCCESS
+	code := e.SUCCESS
 	if err := c.ShouldBindJSON(&tag); err != nil {
 		logging.Info("edit tag parse json error: " + err.Error())
 		code := e.INVALID_PARAMS
 		util.Res(c, http.StatusBadRequest, code, nil)
 		return
 	}
-	id := com.StrTo(c.Param("id")).MustInt()
-	tag.ID = &id
-	if models_handler.ExistTagByID(id) {
-		models_handler.EditTag(tag)
-		util.Res(c, http.StatusOK, code, nil)
-	} else {
-		code = e.ERROR_NOT_EXIST_TAG
-		util.Res(c, http.StatusOK, code, nil)
+	id, err := com.StrTo(c.Param("id")).Int()
+	if err != nil {
+		code = e.INVALID_PARAMS
+		util.Res(c, http.StatusBadRequest, code, nil)
 	}
+	tag.ID = id
+	service.EditTag(tag)
+	// if models_handler.ExistTagByID(id) {
+	// 	models_handler.EditTag(tag)
+	// 	util.Res(c, http.StatusOK, code, nil)
+	// } else {
+	// 	code = e.ERROR_NOT_EXIST_TAG
+	// 	util.Res(c, http.StatusOK, code, nil)
+	// }
 }
 
 // 删除文章标签

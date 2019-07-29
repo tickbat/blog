@@ -6,18 +6,20 @@ import (
 	"blog/pkg/gredis"
 	"encoding/json"
 	"github.com/go-redis/redis"
+	"blog/pkg/logging"
 )
 
 func GetTags(tag *models.QueryTag) ([]models.QueryTag, error) {
-	var resList []models.QueryTag
+	var tagList []models.QueryTag
 	key := cache_service.GetTagsKey(tag)
 	val, err := gredis.Get(key)
 	if err == redis.Nil {
-		models.Db.Where(tag).Offset(tag.PageNum).Limit(tag.PageNum).Find(&resList)
-		return resList, nil
+		models.Db.Where(tag).Offset(tag.PageNum).Limit(tag.PageNum).Find(&tagList)
+		gredis.Set(key, tagList, 3600)
+		return tagList, nil
 	}
-	json.Unmarshal(val, &resList)
-	return resList, err
+	json.Unmarshal(val, &tagList)
+	return tagList, err
 }
 
 func GetTagsTotal(maps interface{}) (count int) {
@@ -35,13 +37,17 @@ func ExistTagByID(id int) bool {
 	return true
 }
 
-func AddTag(tag models.Tag) bool {
-	models.Db.Create(&tag)
-	return true
+func AddTag(tag models.Tag) error {
+	if err := models.Db.Create(&tag).Error; err != nil {
+		logging.Error("add tag from db error:", err)
+		return err
+	}
+	return nil
 }
 
 func EditTag(tag models.Tag) {
 	models.Db.Model(&tag).Update(tag)
+	
 }
 
 func DeleteTag(id int) {

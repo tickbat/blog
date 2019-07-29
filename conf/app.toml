@@ -24,7 +24,7 @@ timeFormat = "20060102"
 
 [image]
 prefixUrl = "http://127.0.0.1:8000"
-savePath = "upload/images/"
+savePath = "runtime/upload/images/"
 allowExts = [".jpg", ".jpeg", ".png"]
 # MB
 maxSize = 5

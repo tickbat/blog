@@ -1,6 +1,6 @@
 package e
 
-var MsgFlags = map[int]string{
+var MsgFlags = map[mErr]string{
 	SUCCESS:                       	 	"ok",
 	ERROR:                          	"fail",
 	INVALID_PARAMS:                 	"请求参数错误",
@@ -17,7 +17,8 @@ var MsgFlags = map[int]string{
 	ERROR_UPLOAD_CHECK_IMAGE_FORMAT: 	"校验图片错误，图片格式或大小有问题",
 }
 
-func GetMsg(code int) string {
+
+func GetMsg(code mErr) string {
 	msg, ok := MsgFlags[code]
 	if ok {
 		return msg
@@ -25,3 +26,4 @@ func GetMsg(code int) string {
 
 	return MsgFlags[ERROR]
 }
+
