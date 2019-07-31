@@ -2,11 +2,11 @@ package v1
 
 import (
 	"blog/models"
-	"blog/models/handler"
 	"blog/pkg/e"
 	"blog/pkg/logging"
 	"blog/pkg/setting"
 	"blog/pkg/util"
+	"blog/service"
 	"github.com/Unknwon/com"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -53,7 +53,7 @@ func AddArticle(c *gin.Context) {
 		return
 	}
 	if article.TagId != nil {
-		if !models_handler.ExistTagByID(*article.TagId) {
+		if !service.ExistTagByID(*article.TagId) {
 			code = e.ERROR_NOT_EXIST_TAG
 			util.Res(c, http.StatusBadRequest, code, nil)
 			return
@@ -75,7 +75,7 @@ func EditArticle(c *gin.Context) {
 	}
 	println(article.TagId)
 	if article.TagId != nil {
-		if models_handler.ExistTagByID(*article.TagId) {
+		if service.ExistTagByID(*article.TagId) {
 			code = e.INVALID_PARAMS
 			util.Res(c, http.StatusBadRequest, code, nil)
 			return

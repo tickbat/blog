@@ -1,11 +1,10 @@
-package main
+package v
 
 import (
-	"reflect"
-	"sync"
-
 	"github.com/gin-gonic/gin/binding"
 	"gopkg.in/go-playground/validator.v9"
+	"reflect"
+	"sync"
 )
 
 type defaultValidator struct {
@@ -54,6 +53,15 @@ func kindOfData(data interface{}) reflect.Kind {
 	return valueType
 }
 
+var GinVlidate *validator.Validate
+
 func init() {
 	binding.Validator = new(defaultValidator)
+	v, ok := binding.Validator.Engine().(*validator.Validate)
+	if ok {
+		GinVlidate = v
+		// 注册 Translator，参照上面的 translator_example.go
+		// 注册自定义字段验证 Validator
+		// 注册自定义翻译器 Translator
+	}
 }

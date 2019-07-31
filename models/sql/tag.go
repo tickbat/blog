@@ -27,8 +27,8 @@ func ExistTagByID(id int) (bool, error) {
 	if err := models.Db.Select("id").Where("id = ?", id).First(&tag).Error; err != nil {
 		return false, err
 	}
-	if tag.ID == 0 {
-		return false, nil
+	if tag.ID > 0 {
+		return true, nil
 	}
 	return false, nil
 }

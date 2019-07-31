@@ -4,7 +4,6 @@ import (
 	"blog/models"
 	"blog/models/cache"
 	"blog/models/sql"
-	"blog/pkg/e"
 	"blog/pkg/gredis"
 	"blog/pkg/logging"
 	"encoding/json"
@@ -26,22 +25,19 @@ func GetTags(tag *models.QueryTag) ([]models.QueryTag, error) {
 }
 
 func AddTag(tag models.Tag) error {
-	return models_handler.AddTag(tag)
-}
-
-func AddTag(tag models.Tag) error {
-	return models_handler.AddTag(tag)
+	return sql.AddTag(tag)
 }
 
 func EditTag(tag models.Tag) error {
-	if !models_handler.ExistTagByID(tag.ID) {
-		return e.ERROR_NOT_EXIST_TAG
-	}
-	return models_handler.EditTag(tag)
+	return sql.EditTag(tag)
 }
 
 func DeleteTag(id int) error {
-	return models_handler.DeleteTag(id)
+	return sql.DeleteTag(id)
+}
+
+func ExistTagByID(id int) (bool, error) {
+	return sql.ExistTagByID(id)
 }
 
 func ClearAllTag() error {

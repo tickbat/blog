@@ -2,7 +2,6 @@ package v1
 
 import (
 	"blog/models"
-	"blog/models/sql"
 	"blog/pkg/e"
 	"blog/pkg/logging"
 	"blog/pkg/util"
@@ -42,20 +41,13 @@ func AddTag(c *gin.Context) {
 // 修改文章标签
 func EditTag(c *gin.Context) {
 	var tag models.Tag
-	r := e.SUCCESS
 	if util.Validate(c, &tag) != nil {
 		return
 	}
-	id, err := com.StrTo(c.Param("id")).Int()
+	tag.ID = com.StrTo(c.Param("id")).MustInt()
+	err := service.EditTag(tag)
 	if err != nil {
-		r = e.INVALID_PARAMS
-		util.Res(c, http.StatusBadRequest, r, nil)
-		return
-	}
-	tag.ID = id
-	err = service.EditTag(tag)
-	if err == e.ERROR_NOT_EXIST_TAG {
-		util.Res(c, http.StatusBadRequest, err, nil)
+		util.Res(c, http.StatusBadRequest, e.ERROR, nil)
 		return
 	}
 }
@@ -63,16 +55,18 @@ func EditTag(c *gin.Context) {
 // 删除文章标签
 func DeleteTag(c *gin.Context) {
 	id := com.StrTo(c.Param("id")).MustInt()
-	r := e.SUCCESS
-	if !sql.ExistTagByID(id) {
-		r = e.ERROR_NOT_EXIST_TAG
-		util.Res(c, http.StatusOK, r, nil)
+	exist, err := service.ExistTagByID(id)
+	if err != nil {
+		util.Res(c, http.StatusInternalServerError, e.ERROR_EXIST_TAG_FAIL, nil)
+		return
+	}
+	if !exist {
+		util.Res(c, http.StatusBadRequest, e.ERROR_NOT_EXIST_TAG, nil)
 		return
 	}
 	if err := service.DeleteTag(id); err != nil {
-		r = e.ERROR
-		util.Res(c, http.StatusInternalServerError, r, nil)
+		util.Res(c, http.StatusInternalServerError, e.ERROR, nil)
 		return
 	}
-	util.Res(c, http.StatusOK, r, nil)
+	util.Res(c, http.StatusOK, e.SUCCESS, nil)
 }
