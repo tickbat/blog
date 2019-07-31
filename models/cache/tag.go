@@ -1,4 +1,4 @@
-package cache_service
+package cache
 
 import (
 	"blog/models"

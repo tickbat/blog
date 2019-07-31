@@ -2,20 +2,31 @@ package service
 
 import (
 	"blog/models"
-	"blog/models/handler"
+	"blog/models/cache"
+	"blog/models/sql"
 	"blog/pkg/e"
+	"blog/pkg/gredis"
+	"blog/pkg/logging"
+	"encoding/json"
 )
 
-func GetTags(tag *models.QueryTag) (map[string]interface{}, error) {
-	data := make(map[string]interface{})
-	tagList, err := models_handler.GetTags(tag)
+func GetTags(tag *models.QueryTag) ([]models.QueryTag, error) {
+	var tagList []models.QueryTag
+	key := cache.GetTagsKey(tag)
+	val, err := gredis.Get(key)
 	if err != nil {
-		return nil, err
+		logging.Warn("get tags from redis error:", err)
+		return sql.GetTags(tag)
 	}
-	page := models_handler.GetTagsTotal(tag)
-	data["list"] = tagList
-	data["total"] = page
-	return data, err
+	if err := json.Unmarshal(val, &tagList); err != nil {
+		logging.Warn("get tags when parse json error:", err)
+		return sql.GetTags(tag)
+	}
+	return tagList, nil
+}
+
+func AddTag(tag models.Tag) error {
+	return models_handler.AddTag(tag)
 }
 
 func AddTag(tag models.Tag) error {

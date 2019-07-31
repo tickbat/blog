@@ -2,7 +2,6 @@ package models
 
 import (
 	"time"
-	"errors"
 )
 
 type Article struct {
@@ -60,7 +59,7 @@ func EditArticle(article Article) {
 
 func DeleteArticle(id int) {
 	var article Article
-	article.ID = &id
+	article.ID = id
 	Db.Delete(&article)
 }
 
