@@ -2,6 +2,7 @@
 runMode = "debug"
 pageSize = 10
 jwtSecret = "23347$040412"
+prefixUrl = "http://127.0.0.1:8000"
 
 [server]
 httpPort = 8000
@@ -23,7 +24,6 @@ logFileExt = "log"
 timeFormat = "20060102"
 
 [image]
-prefixUrl = "http://127.0.0.1:8000"
 savePath = "runtime/upload/images/"
 allowExts = [".jpg", ".jpeg", ".png"]
 # MB
@@ -32,4 +32,7 @@ maxSize = 5
 [redis]
 host = "127.0.0.1:6379"
 password = "root"
+
+[excel]
+savePath = "runtime/excel/"
 

@@ -13,6 +13,14 @@ func GetTags(tag *models.QueryTag, pageNum, pageSize int) ([]models.Tag, error) 
 	return tagList, nil
 }
 
+func GetTagsAll(tag *models.QueryTag) ([]models.Tag, error) {
+	var tagList []models.Tag
+	if err := models.Db.Where(tag).Find(&tagList).Error; err != nil && err != gorm.ErrRecordNotFound {
+		return tagList, err
+	}
+	return tagList, nil
+}
+
 func GetTagsTotal(maps interface{}) (int, error) {
 	var count int
 	err := models.Db.Model(&models.Tag{}).Where(maps).Count(&count).Error

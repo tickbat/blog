@@ -13,6 +13,7 @@ var (
 	Log      logs
 	Image    image
 	Redis    redis
+	Excel    excel
 )
 
 func init() {
@@ -30,6 +31,7 @@ func init() {
 	Log = conf.Log
 	Image = conf.Image
 	Redis = conf.Redis
+	Excel = conf.Excel
 }
 
 type config struct {
@@ -39,12 +41,14 @@ type config struct {
 	Log      logs
 	Image    image
 	Redis    redis
+	Excel    excel
 }
 
 type app struct {
 	RunMode   string
 	PageSize  int
 	JwtSecret string
+	PrefixUrl string
 }
 
 type server struct {
@@ -79,4 +83,8 @@ type image struct {
 type redis struct {
 	Password string
 	Host     string
+}
+
+type excel struct {
+	SavePath string
 }

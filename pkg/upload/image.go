@@ -1,62 +1,62 @@
 package upload
 
 import (
-	"blog/pkg/setting"
-	"path"
-	"strings"
-	"blog/pkg/util"
 	"blog/pkg/file"
 	"blog/pkg/logging"
-	"mime/multipart"
+	"blog/pkg/setting"
+	"blog/pkg/util"
 	"fmt"
+	"mime/multipart"
+	"path"
+	"strings"
 )
+
 func GetImageFullUrl(name string) string {
-    return setting.Image.PrefixUrl + "/" + GetImagePath() + name
+	return setting.App.PrefixUrl + "/" + GetImagePath() + name
 }
 
 func GetImageName(name string) string {
-    ext := path.Ext(name)
-    fileName := strings.TrimSuffix(name, ext)
-    fileName = util.MD5(fileName)
+	ext := path.Ext(name)
+	fileName := strings.TrimSuffix(name, ext)
+	fileName = util.MD5(fileName)
 
-    return fileName + ext
+	return fileName + ext
 }
 
 func GetImagePath() string {
-    return setting.Image.SavePath
+	return setting.Image.SavePath
 }
 
-
 func CheckImageExt(fileName string) bool {
-    ext := file.GetExt(fileName)
-    for _, allowExt := range setting.Image.AllowExts {
-        if strings.ToUpper(allowExt) == strings.ToUpper(ext) {
-            return true
-        }
-    }
-    return false
+	ext := file.GetExt(fileName)
+	for _, allowExt := range setting.Image.AllowExts {
+		if strings.ToUpper(allowExt) == strings.ToUpper(ext) {
+			return true
+		}
+	}
+	return false
 }
 
 func CheckImageSize(f multipart.File) bool {
-    size, err := file.GetSize(f)
-    if err != nil {
-        logging.Error(err)
-        return false
-    }
+	size, err := file.GetSize(f)
+	if err != nil {
+		logging.Error(err)
+		return false
+	}
 
-    return size <= setting.Image.MaxSize
+	return size <= setting.Image.MaxSize
 }
 
 func CheckImage(src string) error {
-    err := file.IsNotExistMkDir(src)
-    if err != nil {
-        return fmt.Errorf("file.IsNotExistMkDir err: %v", err)
-    }
+	err := file.IsNotExistMkDir(src)
+	if err != nil {
+		return fmt.Errorf("file.IsNotExistMkDir err: %v", err)
+	}
 
-    perm := file.CheckPermission(src)
-    if perm == true {
-        return fmt.Errorf("file.CheckPermission Permission denied src: %s", src)
-    }
+	perm := file.CheckPermission(src)
+	if perm == true {
+		return fmt.Errorf("file.CheckPermission Permission denied src: %s", src)
+	}
 
-    return nil
+	return nil
 }

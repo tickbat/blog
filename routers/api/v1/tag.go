@@ -4,6 +4,7 @@ import (
 	"blog/models"
 	"blog/pkg/e"
 	"blog/pkg/logging"
+	"blog/pkg/setting"
 	"blog/pkg/util"
 	"blog/service"
 	"github.com/Unknwon/com"
@@ -94,4 +95,20 @@ func DeleteTag(c *gin.Context) {
 		return
 	}
 	util.Res(c, http.StatusOK, e.SUCCESS, nil)
+}
+
+func ExportTag(c *gin.Context) {
+	var tag models.QueryTag
+	if util.Validate(c, "query", &tag) != nil {
+		return
+	}
+	filename, err := service.ExportTag(tag)
+	if err != nil {
+		logging.Error("export tag exist from service error:", err)
+		util.Res(c, http.StatusInternalServerError, e.ERROR, nil)
+		return
+	}
+	util.Res(c, http.StatusOK, e.SUCCESS, gin.H{
+		"export_url": setting.App.PrefixUrl + setting.Excel.SavePath + filename,
+	})
 }

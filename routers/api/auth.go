@@ -3,31 +3,32 @@ package api
 import (
 	"blog/models"
 	"blog/pkg/e"
+	"blog/pkg/logging"
 	"blog/pkg/util"
+	"blog/service"
 	"github.com/gin-gonic/gin"
-	"log"
 	"net/http"
 )
 
 func GetAuth(c *gin.Context) {
 	var auth models.Auth
-	code := e.SUCCESS
-	if err := c.ShouldBindJSON(&auth); err != nil {
-		log.Printf("query auth parse json error: %v\n", err)
-		code = e.INVALID_PARAMS
-		util.Res(c, http.StatusBadRequest, code, nil)
+	if util.Validate(c, "json", &auth) != nil {
 		return
 	}
-	if !models.CheckAuth(auth) {
-		code = e.ERROR_AUTH
-		util.Res(c, http.StatusBadRequest, code, nil)
-		return
-	}
-	token, err := util.GenerateToken(*auth.Username)
+	ok, err := service.CheckAuth(auth)
 	if err != nil {
-		code = e.ERROR_AUTH_TOKEN
-		util.Res(c, http.StatusOK, code, err.Error())
+		logging.Error("check auth from service error:", err)
+		util.Res(c, http.StatusInternalServerError, e.ERROR, nil)
 		return
 	}
-	util.Res(c, http.StatusOK, code, token)
+	if !ok {
+		util.Res(c, http.StatusBadRequest, e.ERROR_AUTH, nil)
+		return
+	}
+	token, err := util.GenerateToken(auth.Username)
+	if err != nil {
+		util.Res(c, http.StatusOK, e.ERROR_AUTH_TOKEN, err.Error())
+		return
+	}
+	util.Res(c, http.StatusOK, e.SUCCESS, token)
 }
