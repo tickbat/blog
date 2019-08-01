@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func GetTagsKey(t *models.QueryTag) string {
+func GetTagsKey(t *models.QueryTag, pageNum, pageSize int) string {
 	keys := []string{
 		"TAG-LIST",
 	}
@@ -17,11 +17,11 @@ func GetTagsKey(t *models.QueryTag) string {
 	if t.State != 0 {
 		keys = append(keys, strconv.Itoa(t.State))
 	}
-	if t.PageNum != 0 {
-		keys = append(keys, strconv.Itoa(t.PageNum))
+	if pageNum != 0 {
+		keys = append(keys, strconv.Itoa(pageNum))
 	}
-	if t.PageSize != 0 {
-		keys = append(keys, strconv.Itoa(t.PageSize))
+	if pageSize != 0 {
+		keys = append(keys, strconv.Itoa(pageSize))
 	}
 
 	return strings.Join(keys, "_")

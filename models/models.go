@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-type Model struct {
+type model struct {
 	ID         int `gorm:"primary_key" json:"id"`
 	CreatedOn  int `json:"create_on"`
 	ModifiedOn int `json:"modified_on"`

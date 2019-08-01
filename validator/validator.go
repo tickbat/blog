@@ -55,7 +55,7 @@ func kindOfData(data interface{}) reflect.Kind {
 
 var GinVlidate *validator.Validate
 
-func init() {
+func Setup() {
 	binding.Validator = new(defaultValidator)
 	v, ok := binding.Validator.Engine().(*validator.Validate)
 	if ok {

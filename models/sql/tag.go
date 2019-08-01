@@ -2,13 +2,12 @@ package sql
 
 import (
 	"blog/models"
-	"blog/pkg/logging"
 	"github.com/jinzhu/gorm"
 )
 
-func GetTags(tag *models.QueryTag) ([]models.QueryTag, error) {
-	var tagList []models.QueryTag
-	if err := models.Db.Where(tag).Offset(tag.PageNum).Limit(tag.PageNum).Find(&tagList).Error; err != nil && err != gorm.ErrRecordNotFound {
+func GetTags(tag *models.QueryTag, pageNum, pageSize int) ([]models.Tag, error) {
+	var tagList []models.Tag
+	if err := models.Db.Where(tag).Offset(pageNum).Limit(pageSize).Find(&tagList).Error; err != nil && err != gorm.ErrRecordNotFound {
 		return tagList, err
 	}
 	return tagList, nil
@@ -16,47 +15,34 @@ func GetTags(tag *models.QueryTag) ([]models.QueryTag, error) {
 
 func GetTagsTotal(maps interface{}) (int, error) {
 	var count int
-	if err := models.Db.Model(&models.Tag{}).Where(maps).Count(&count).Error; err != nil {
-		return count, err
-	}
-	return count, nil
+	err := models.Db.Model(&models.Tag{}).Where(maps).Count(&count).Error
+	return count, err
 }
 
 func ExistTagByID(id int) (bool, error) {
 	var tag models.Tag
-	if err := models.Db.Select("id").Where("id = ?", id).First(&tag).Error; err != nil {
-		return false, err
-	}
+	err := models.Db.Select("id").Where("id = ?", id).First(&tag).Error
 	if tag.ID > 0 {
 		return true, nil
 	}
-	return false, nil
+	return false, err
 }
 
 func AddTag(tag models.Tag) error {
-	if err := models.Db.Create(&tag).Error; err != nil {
-		logging.Error("add tag from db error:", err)
-		return err
-	}
-	return nil
+	err := models.Db.Create(&tag).Error
+	return err
 }
 
 func EditTag(tag models.Tag) error {
-	if err := models.Db.Model(&tag).Update(tag).Error; err != nil {
-		logging.Error("edit tag from db error:", err)
-		return err
-	}
-	return nil
+	err := models.Db.Model(&tag).Update(tag).Error
+	return err
 }
 
 func DeleteTag(id int) error {
 	tag := new(models.Tag)
 	tag.ID = id
-	if err := models.Db.Delete(tag).Error; err != nil {
-		logging.Error("delete tag from db error:", err)
-		return err
-	}
-	return nil
+	err := models.Db.Delete(tag).Error
+	return err
 }
 
 /*func ClearAllTag() error {

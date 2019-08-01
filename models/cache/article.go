@@ -1,42 +1,33 @@
 package cache
 
 import (
+	"blog/models"
 	"strconv"
 	"strings"
 )
 
-type Article struct {
-	ID    int
-	TagID int
-	State int
-
-	PageNum  int
-	PageSize int
+func GetArticleKey(id int) string {
+	return "ARTICLE" + "_" + strconv.Itoa(id)
 }
 
-func (a *Article) GetArticleKey() string {
-	return "ARTICLE" + "_" + strconv.Itoa(a.ID)
-}
-
-func (a *Article) GetArticlesKey() string {
+func GetArticlesKey(article *models.QueryArticle, pageNum, pageSize int) string {
 	keys := []string{
 		"ARTICLE-LIST",
 	}
-
-	if a.ID != 0 {
-		keys = append(keys, strconv.Itoa(a.ID))
+	if article.State >= 0 {
+		keys = append(keys, strconv.Itoa(article.State))
 	}
-	if a.TagID > 0 {
-		keys = append(keys, strconv.Itoa(a.TagID))
+	if article.Title != "" {
+		keys = append(keys, article.Title)
 	}
-	if a.State >= 0 {
-		keys = append(keys, strconv.Itoa(a.State))
+	if article.TagId > 0 {
+		keys = append(keys, strconv.Itoa(article.TagId))
 	}
-	if a.PageNum > 0 {
-		keys = append(keys, strconv.Itoa(a.PageNum))
+	if pageNum > 0 {
+		keys = append(keys, strconv.Itoa(pageNum))
 	}
-	if a.PageSize > 0 {
-		keys = append(keys, strconv.Itoa(a.PageSize))
+	if pageSize > 0 {
+		keys = append(keys, strconv.Itoa(pageSize))
 	}
 
 	return strings.Join(keys, "_")

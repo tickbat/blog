@@ -1,8 +1,8 @@
 package cron
 
 import (
-	"blog/models"
 	"blog/pkg/logging"
+	"blog/service"
 	"github.com/robfig/cron"
 )
 
@@ -14,7 +14,7 @@ func init() {
 	logging.Info("start cron")
 	c := cron.New()
 	c.AddFunc(clearTime, func() {
-		if err := models.ClearAllArticle(); err != nil {
+		if err := service.ClearAllArticle(); err != nil {
 			logging.Error("cron ClearAllArticle error: " + err.Error())
 		} else {
 			logging.Info("cron ClearAllArticle success")

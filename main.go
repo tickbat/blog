@@ -6,7 +6,6 @@ import (
 	"blog/pkg/logging"
 	"blog/pkg/setting"
 	"blog/routers"
-	_ "blog/validator"
 	"fmt"
 	"net/http"
 	"time"
