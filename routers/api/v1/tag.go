@@ -112,3 +112,22 @@ func ExportTag(c *gin.Context) {
 		"export_url": setting.App.PrefixUrl + setting.Excel.SavePath + filename,
 	})
 }
+
+func ImportTag(c *gin.Context) {
+	file, _, err := c.Request.FormFile("file")
+	if err != nil {
+		logging.Error("get tag file error", err)
+		util.Res(c, http.StatusOK, e.ERROR, nil)
+		return
+	}
+	err, failNum := service.ImportTag(file)
+	if err != nil {
+		logging.Error("import tag error", err)
+		util.Res(c, http.StatusOK, e.ERROR_IMPORT_TAG_FAIL, nil)
+		return
+	}
+
+	util.Res(c, http.StatusOK, e.SUCCESS, gin.H{
+		"fail": failNum,
+	})
+}

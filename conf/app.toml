@@ -30,8 +30,9 @@ allowExts = [".jpg", ".jpeg", ".png"]
 maxSize = 5
 
 [redis]
-host = "127.0.0.1:6379"
-password = "root"
+# 127.0.0.1:6379
+host = "120.55.62.157:6379"
+password = "redis519"
 
 [excel]
 savePath = "runtime/excel/"

@@ -3,6 +3,7 @@ module blog
 go 1.12
 
 require (
+	github.com/360EntSecGroup-Skylar/excelize v1.4.1
 	github.com/BurntSushi/toml v0.3.1
 	github.com/Unknwon/com v0.0.0-20190321035513-0fed4efef755
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
