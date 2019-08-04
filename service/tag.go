@@ -36,17 +36,6 @@ func GetTags(tag *models.QueryTag, pageNum, pageSize int) ([]models.Tag, error) 
 		return data, nil
 	}
 	return tagList, nil
-	/*if err := json.Unmarshal(val, &tagList); err != nil {
-		logging.Warn("get tags when parse json error:", err)
-		data, err := sql.GetTags(tag, pageNum, pageSize)
-		if err != nil {
-			return data, err
-		}
-		if err := gredis.Set(key, data, time.Second * 60); err != nil {
-			logging.Warn("set tags into redis error:", err)
-		}
-		return data, nil
-	}*/
 }
 
 func AddTag(tag models.Tag) error {

@@ -58,12 +58,11 @@ type server struct {
 }
 
 type database struct {
-	Type        string
-	User        string
-	Password    string
-	Host        string
-	Name        string
-	TablePrefix string
+	Type     string
+	User     string
+	Password string
+	Host     string
+	Name     string
 }
 
 type logs struct {

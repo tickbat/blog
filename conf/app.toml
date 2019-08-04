@@ -15,7 +15,6 @@ user = "root"
 password = "root"
 host = "127.0.0.1:3306"
 name = "blog"
-tablePrefix = "blog_"
 
 [log]
 logSavePath = "runtime/logs/"

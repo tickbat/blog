@@ -26,7 +26,7 @@ func InitRouters() *gin.Engine {
 		apiv1.POST("/tag", v1.AddTag)
 		apiv1.PUT("/tag/:id", v1.EditTag)
 		apiv1.DELETE("/tag/:id", v1.DeleteTag)
-		apiv1.DELETE("/export", v1.ExportTag)
+		apiv1.GET("/export", v1.ExportTag)
 		apiv1.POST("/tags/import", v1.ImportTag)
 
 		apiv1.GET("/article/:id", v1.GetArticle)
@@ -34,6 +34,10 @@ func InitRouters() *gin.Engine {
 		apiv1.POST("/article", v1.AddArticle)
 		apiv1.PUT("/article:id", v1.EditArticle)
 		apiv1.DELETE("/article/:id", v1.DeleteArticle)
+
+		apiv1.GET("/comments/:articleId", v1.GetTags)
+		apiv1.POST("/comment", v1.AddTag)
+		apiv1.DELETE("/comment/:id", v1.DeleteTag)
 	}
 	return r
 }

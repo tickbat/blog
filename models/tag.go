@@ -14,5 +14,5 @@ type QueryTag struct {
 }
 
 func (q QueryTag) TableName() string {
-	return "blog_tag" // find方法会添加前缀，where却不会
+	return "tag" // find方法会添加前缀，where却不会
 }

@@ -45,21 +45,17 @@ func updateTimeStampForUpdateCallback(scope *gorm.Scope) {
 
 func init() {
 	var (
-		err         error
-		dbType      = setting.Database.Type
-		dbName      = setting.Database.Name
-		user        = setting.Database.User
-		password    = setting.Database.Password
-		host        = setting.Database.Host
-		tablePrefix = setting.Database.TablePrefix
+		err      error
+		dbType   = setting.Database.Type
+		dbName   = setting.Database.Name
+		user     = setting.Database.User
+		password = setting.Database.Password
+		host     = setting.Database.Host
 	)
 	source := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True&loc=Local", user, password, host, dbName)
 	Db, err = gorm.Open(dbType, source)
 	if err != nil {
 		logging.Info("open mysql error: ", err.Error())
-	}
-	gorm.DefaultTableNameHandler = func(db *gorm.DB, defaultTableName string) string {
-		return tablePrefix + defaultTableName
 	}
 	Db.SingularTable(true)
 
