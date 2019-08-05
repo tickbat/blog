@@ -3,7 +3,7 @@ package models
 import "time"
 
 type Article struct {
-	model
+	Model
 	TagId      int       `json:"tag_id"`
 	Tag        *Tag      `json:"tag" binding:"-"`
 	Title      string    `json:"title" binding:"required"`

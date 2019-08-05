@@ -67,8 +67,8 @@ func AddArticle(c *gin.Context) {
 	}
 	exist, err := service.ExistTagByID(article.TagId)
 	if err != nil {
-		logging.Error("test tag exist from service error:", err)
-		util.Res(c, http.StatusInternalServerError, e.ERROR_EXIST_TAG_FAIL, nil)
+		logging.Error("get article when test tag exist from service error:", err)
+		util.Res(c, http.StatusInternalServerError, e.ERROR, nil)
 	}
 	if !exist {
 		util.Res(c, http.StatusBadRequest, e.ERROR_NOT_EXIST_TAG, nil)

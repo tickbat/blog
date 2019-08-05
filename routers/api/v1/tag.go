@@ -74,6 +74,7 @@ func EditTag(c *gin.Context) {
 		util.Res(c, http.StatusBadRequest, e.ERROR, nil)
 		return
 	}
+	util.Res(c, http.StatusOK, e.SUCCESS, nil)
 }
 
 // 删除文章标签

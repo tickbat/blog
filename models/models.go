@@ -9,15 +9,13 @@ import (
 	"time"
 )
 
-type model struct {
+type Model struct {
 	ID         int `gorm:"primary_key" json:"id"`
 	CreatedOn  int `json:"create_on"`
 	ModifiedOn int `json:"modified_on"`
 }
 
 var Db *gorm.DB
-
-var a = gorm.ErrRecordNotFound
 
 // updateTimeStampForCreateCallback will set `CreatedOn`, `ModifiedOn` when creating
 func updateTimeStampForCreateCallback(scope *gorm.Scope) {
@@ -55,7 +53,7 @@ func init() {
 	source := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True&loc=Local", user, password, host, dbName)
 	Db, err = gorm.Open(dbType, source)
 	if err != nil {
-		logging.Info("open mysql error: ", err.Error())
+		logging.Fatal("open mysql error: ", err)
 	}
 	Db.SingularTable(true)
 

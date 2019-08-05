@@ -1,7 +1,7 @@
 package models
 
 type Tag struct {
-	model
+	Model
 	Name       string `json:"name" binding:"required"`
 	CreatedBy  string `json:"create_by"`
 	ModifiedBy string `json:"modified_by"`

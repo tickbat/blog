@@ -1,7 +1,7 @@
 package models
 
 type Comment struct {
-	model
+	Model
 	Content   string `json:"content" binding:"required"`
 	ArticleId int    `json:"articleId" binding:"required"`
 	CreateBy  int    `json:"create_by" binding:"required"`
