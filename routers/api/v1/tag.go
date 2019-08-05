@@ -14,7 +14,7 @@ import (
 
 func GetTags(c *gin.Context) {
 	var tag models.QueryTag
-	if util.Validate(c, "query", &tag) != nil {
+	if util.ValidateQuery(c, &tag) != nil {
 		return
 	}
 	pageNum, pageSize := util.GetPage(c)
@@ -40,7 +40,7 @@ func GetTags(c *gin.Context) {
 // 新增文章标签
 func AddTag(c *gin.Context) {
 	var tag models.Tag
-	if util.Validate(c, "json", &tag) != nil {
+	if util.ValidateJson(c, &tag) != nil {
 		return
 	}
 	if err := service.AddTag(tag); err != nil {
@@ -54,7 +54,7 @@ func AddTag(c *gin.Context) {
 // 修改文章标签
 func EditTag(c *gin.Context) {
 	var tag models.Tag
-	if util.Validate(c, "json", &tag) != nil {
+	if util.ValidateJson(c, &tag) != nil {
 		return
 	}
 	tag.ID = com.StrTo(c.Param("id")).MustInt()
@@ -100,7 +100,7 @@ func DeleteTag(c *gin.Context) {
 
 func ExportTag(c *gin.Context) {
 	var tag models.QueryTag
-	if util.Validate(c, "query", &tag) != nil {
+	if util.ValidateQuery(c, &tag) != nil {
 		return
 	}
 	filename, err := service.ExportTag(tag)

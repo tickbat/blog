@@ -13,7 +13,7 @@ import (
 
 func GetComments(c *gin.Context) {
 	var comment models.QueryComment
-	if err := util.Validate(c, "json", &comment); err != nil {
+	if err := util.ValidateQuery(c, &comment); err != nil {
 		return
 	}
 	exist, err := service.ExistArticleByID(comment.ArticleId)
@@ -35,7 +35,7 @@ func GetComments(c *gin.Context) {
 
 func AddComment(c *gin.Context) {
 	var comment models.Comment
-	if err := util.Validate(c, "json", comment); err != nil {
+	if err := util.ValidateJson(c, comment); err != nil {
 		return
 	}
 	if err := service.AddComment(comment); err != nil {

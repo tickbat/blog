@@ -27,3 +27,11 @@ func Validate(c *gin.Context, t string, params interface{}) error {
 	}
 	return nil
 }
+
+func ValidateJson(c *gin.Context, params interface{}) error {
+	return Validate(c, "json", params)
+}
+
+func ValidateQuery(c *gin.Context, params interface{}) error {
+	return Validate(c, "query", params)
+}

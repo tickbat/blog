@@ -37,7 +37,7 @@ func GetArticle(c *gin.Context) {
 //获取多个文章
 func GetArticles(c *gin.Context) {
 	var article models.QueryArticle
-	if util.Validate(c, "json", &article) != nil {
+	if util.ValidateQuery(c, &article) != nil {
 		return
 	}
 	pageNum, pageSize := util.GetPage(c)
@@ -62,7 +62,7 @@ func GetArticles(c *gin.Context) {
 //新增文章
 func AddArticle(c *gin.Context) {
 	var article models.Article
-	if util.Validate(c, "json", &article) != nil {
+	if util.ValidateJson(c, &article) != nil {
 		return
 	}
 	exist, err := service.ExistTagByID(article.TagId)
@@ -85,7 +85,7 @@ func AddArticle(c *gin.Context) {
 //修改文章
 func EditArticle(c *gin.Context) {
 	var article models.Article
-	if util.Validate(c, "json", &article) != nil {
+	if util.ValidateJson(c, &article) != nil {
 		return
 	}
 	article.ID = com.StrTo(c.Param("id")).MustInt()
