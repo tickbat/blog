@@ -15,13 +15,8 @@ import (
 //获取单个文章
 func GetArticle(c *gin.Context) {
 	id := com.StrTo(c.Param("id")).MustInt()
-	exist, err := service.ExistArticleByID(id)
-	if err != nil {
+	if !service.ExistArticleByID(id) {
 		util.Res(c, http.StatusOK, e.ERROR_NOT_EXIST_ARTICLE, nil)
-		return
-	}
-	if !exist {
-		util.Res(c, http.StatusOK, e.ERROR_GET_ARTICLE_FAIL, nil)
 		return
 	}
 
@@ -65,12 +60,7 @@ func AddArticle(c *gin.Context) {
 	if util.ValidateJson(c, &article) != nil {
 		return
 	}
-	exist, err := service.ExistTagByID(article.TagId)
-	if err != nil {
-		logging.Error("get article when test tag exist from service error:", err)
-		util.Res(c, http.StatusInternalServerError, e.ERROR, nil)
-	}
-	if !exist {
+	if !service.ExistTagByID(article.TagID) {
 		util.Res(c, http.StatusBadRequest, e.ERROR_NOT_EXIST_TAG, nil)
 		return
 	}
@@ -89,51 +79,33 @@ func EditArticle(c *gin.Context) {
 		return
 	}
 	article.ID = com.StrTo(c.Param("id")).MustInt()
-
-	exist, err := service.ExistArticleByID(article.ID)
-	if err != nil {
+	if !service.ExistArticleByID(article.ID) {
 		util.Res(c, http.StatusOK, e.ERROR_NOT_EXIST_ARTICLE, nil)
 		return
 	}
-	if !exist {
-		util.Res(c, http.StatusOK, e.ERROR_GET_ARTICLE_FAIL, nil)
-		return
-	}
-
-	exist, err = service.ExistTagByID(article.ID)
-	if err != nil {
-		logging.Error("test article exist from service error:", err)
-		util.Res(c, http.StatusInternalServerError, e.ERROR_CHECK_EXIST_ARTICLE_FAIL, nil)
-		return
-	}
-	if !exist {
+	if !service.ExistTagByID(article.TagID) {
 		util.Res(c, http.StatusBadRequest, e.ERROR_NOT_EXIST_TAG, nil)
 		return
 	}
-	err = sql.EditArticle(article)
-	if err != nil {
+	if err := sql.EditArticle(article); err != nil {
 		logging.Error("edit article from service error:", err)
 		util.Res(c, http.StatusInternalServerError, e.ERROR, nil)
 		return
 	}
+	util.Res(c, http.StatusOK, e.SUCCESS, nil)
 }
 
 //删除文章
 func DeleteArticle(c *gin.Context) {
 	id := com.StrTo(c.Param("id")).MustInt()
-	exist, err := service.ExistArticleByID(id)
-	if err != nil {
-		util.Res(c, http.StatusOK, e.ERROR_NOT_EXIST_ARTICLE, nil)
+	if !service.ExistArticleByID(id) {
+		util.Res(c, http.StatusOK, e.ERROR, nil)
 		return
 	}
-	if !exist {
-		util.Res(c, http.StatusOK, e.ERROR_GET_ARTICLE_FAIL, nil)
-		return
-	}
-	err = sql.DeleteArticle(id)
-	if err != nil {
+	if err := sql.DeleteArticle(id); err != nil {
 		logging.Error("delete article from service error:", err)
 		util.Res(c, http.StatusInternalServerError, e.ERROR, nil)
 		return
 	}
+	util.Res(c, http.StatusOK, e.SUCCESS, nil)
 }

@@ -15,12 +15,12 @@ func Res(c *gin.Context, status int, code int, data interface{}) {
 	})
 }
 
-func Validate(c *gin.Context, t string, params interface{}) error {
+func Validate(c *gin.Context, t string, obj interface{}) error {
 	methods := map[string]func(obj interface{}) error{
 		"json":  c.ShouldBindJSON,
 		"query": c.ShouldBindQuery,
 	}
-	if err := methods[t](params); err != nil {
+	if err := methods[t](obj); err != nil {
 		logging.Error("bind params error:", err)
 		Res(c, http.StatusBadRequest, e.INVALID_PARAMS, nil)
 		return err
@@ -28,10 +28,10 @@ func Validate(c *gin.Context, t string, params interface{}) error {
 	return nil
 }
 
-func ValidateJson(c *gin.Context, params interface{}) error {
-	return Validate(c, "json", params)
+func ValidateJson(c *gin.Context, obj interface{}) error {
+	return Validate(c, "json", obj)
 }
 
-func ValidateQuery(c *gin.Context, params interface{}) error {
-	return Validate(c, "query", params)
+func ValidateQuery(c *gin.Context, obj interface{}) error {
+	return Validate(c, "query", obj)
 }

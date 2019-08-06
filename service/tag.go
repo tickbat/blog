@@ -9,6 +9,7 @@ import (
 	"blog/pkg/setting"
 	"blog/pkg/util"
 	"encoding/json"
+	"fmt"
 	"github.com/360EntSecGroup-Skylar/excelize"
 	"io"
 	"strconv"
@@ -19,7 +20,8 @@ func GetTags(tag *models.QueryTag, pageNum, pageSize int) ([]models.Tag, error) 
 	var tagList []models.Tag
 	key := cache.GetTagsKey(tag, pageNum, pageSize)
 	val, err := gredis.Get(key)
-	if err != nil && json.Unmarshal(val, &tagList) != nil {
+	marshalErr := json.Unmarshal(val, &tagList)
+	if err != nil && marshalErr != nil {
 		var data []models.Tag
 		logging.Warn("get tags from redis error:", err)
 		if pageNum == 0 && pageSize == 0 {
@@ -35,6 +37,7 @@ func GetTags(tag *models.QueryTag, pageNum, pageSize int) ([]models.Tag, error) 
 		}
 		return data, nil
 	}
+	fmt.Printf("%+v\n", tagList)
 	return tagList, nil
 }
 
@@ -50,7 +53,7 @@ func DeleteTag(id int) error {
 	return sql.DeleteTag(id)
 }
 
-func ExistTagByID(id int) (bool, error) {
+func ExistTagByID(id int) bool {
 	return sql.ExistTagByID(id)
 }
 

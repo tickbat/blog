@@ -7,12 +7,14 @@ import (
 
 func GetArticle(id int) (models.Article, error) {
 	var article models.Article
-	if err := models.Db.Where("id = ?", id).First(&article).Error; err != nil && err != gorm.ErrRecordNotFound {
+	if err := models.Db.Preload("Tag").Where("id = ?", id).First(&article).Error; err != nil && err != gorm.ErrRecordNotFound {
 		return article, err
 	}
-	if err := models.Db.Model(&article).Related(&article.Tag).Error; err != nil {
+	/*if err := models.Db.Model(&article).Related(&article.Tag).Error; err != nil && err != gorm.ErrRecordNotFound {
 		return article, err
 	}
+	// 使用relatied关联不能用*Tag，指针
+	*/
 	return article, nil
 }
 
@@ -30,13 +32,12 @@ func GetArticlesTotal(conditions models.QueryArticle) (int, error) {
 	return count, err
 }
 
-func ExistArticleByID(id int) (bool, error) {
+func ExistArticleByID(id int) bool {
 	var article models.Article
-	err := models.Db.Select("id").Where("id = ?", id).First(&article).Error
-	if article.ID == 0 {
-		return false, err
+	if models.Db.First(&article, "id = ?", id).RecordNotFound() {
+		return false
 	}
-	return true, err
+	return true
 }
 
 func AddArticle(article models.Article) error {

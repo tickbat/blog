@@ -32,12 +32,16 @@ func InitRouters() *gin.Engine {
 		apiv1.GET("/article/:id", v1.GetArticle)
 		apiv1.GET("/articles", v1.GetArticles)
 		apiv1.POST("/article", v1.AddArticle)
-		apiv1.PUT("/article:id", v1.EditArticle)
+		apiv1.PUT("/article/:id", v1.EditArticle)
 		apiv1.DELETE("/article/:id", v1.DeleteArticle)
 
-		apiv1.GET("/comments/:articleId", v1.GetComments)
+		apiv1.GET("/comments/", v1.GetComments)
 		apiv1.POST("/comment", v1.AddComment)
 		apiv1.DELETE("/comment/:id", v1.DeleteComment)
+
+		apiv1.GET("/replies", v1.GetReplies)
+		apiv1.POST("/reply", v1.AddReply)
+		apiv1.DELETE("/reply/:id", v1.DeleteReply)
 	}
 	return r
 }

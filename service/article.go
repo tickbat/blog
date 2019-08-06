@@ -14,7 +14,8 @@ func GetArticle(id int) (models.Article, error) {
 	var articleList models.Article
 	key := cache.GetArticleKey(id)
 	val, err := gredis.Get(key)
-	if err != nil && json.Unmarshal(val, &articleList) != nil {
+	marshalErr := json.Unmarshal(val, &articleList)
+	if err != nil && marshalErr != nil {
 		logging.Warn("get article from redis error:", err)
 		data, err := sql.GetArticle(id)
 		if err != nil {
@@ -32,7 +33,8 @@ func GetArticles(conditions *models.QueryArticle, pageNum, pageSize int) ([]mode
 	var ArticleList []models.Article
 	key := cache.GetArticlesKey(conditions, pageNum, pageSize)
 	val, err := gredis.Get(key)
-	if err != nil && json.Unmarshal(val, &ArticleList) != nil {
+	marshalErr := json.Unmarshal(val, &ArticleList)
+	if err != nil && marshalErr != nil {
 		logging.Warn("get tags from redis error:", err)
 		data, err := sql.GetArticles(conditions, pageNum, pageSize)
 		if err != nil {
@@ -50,7 +52,7 @@ func GetArticlesTotal(conditions models.QueryArticle) (int, error) {
 	return sql.GetArticlesTotal(conditions)
 }
 
-func ExistArticleByID(id int) (bool, error) {
+func ExistArticleByID(id int) bool {
 	return sql.ExistArticleByID(id)
 }
 

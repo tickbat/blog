@@ -27,13 +27,12 @@ func GetTagsTotal(maps interface{}) (int, error) {
 	return count, err
 }
 
-func ExistTagByID(id int) (bool, error) {
+func ExistTagByID(id int) bool {
 	var tag models.Tag
-	err := models.Db.Select("id").Where("id = ?", id).First(&tag).Error
-	if tag.ID > 0 {
-		return true, nil
+	if models.Db.First(&tag, "id = ?", id).RecordNotFound() {
+		return false
 	}
-	return false, err
+	return true
 }
 
 func AddTag(tag models.Tag) error {

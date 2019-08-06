@@ -16,3 +16,7 @@ func AddComment(comment models.Comment) error {
 func DeleteComment(id int) error {
 	return sql.DeleteComment(id)
 }
+
+func ExistCommentByID(id int) bool {
+	return sql.ExistCommentByID(id)
+}

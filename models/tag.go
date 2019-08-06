@@ -13,6 +13,6 @@ type QueryTag struct {
 	State int    `form:"state" binding:"omitempty,eq=1|eq=2"`
 }
 
-func (q QueryTag) TableName() string {
+/*func (q QueryTag) TableName() string {
 	return "tag" // find方法会添加前缀，where却不会
-}
+}*/

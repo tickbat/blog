@@ -58,17 +58,11 @@ func EditTag(c *gin.Context) {
 		return
 	}
 	tag.ID = com.StrTo(c.Param("id")).MustInt()
-	exist, err := service.ExistTagByID(tag.ID)
-	if err != nil {
-		logging.Error("test tag exist from service error:", err)
-		util.Res(c, http.StatusInternalServerError, e.ERROR_EXIST_TAG_FAIL, nil)
-		return
-	}
-	if !exist {
+	if !service.ExistTagByID(tag.ID) {
 		util.Res(c, http.StatusBadRequest, e.ERROR_NOT_EXIST_TAG, nil)
 		return
 	}
-	err = service.EditTag(tag)
+	err := service.EditTag(tag)
 	if err != nil {
 		logging.Error("edit tag from service error:", err)
 		util.Res(c, http.StatusBadRequest, e.ERROR, nil)
@@ -80,13 +74,7 @@ func EditTag(c *gin.Context) {
 // 删除文章标签
 func DeleteTag(c *gin.Context) {
 	id := com.StrTo(c.Param("id")).MustInt()
-	exist, err := service.ExistTagByID(id)
-	if err != nil {
-		logging.Error("test tag exist from service error:", err)
-		util.Res(c, http.StatusInternalServerError, e.ERROR_EXIST_TAG_FAIL, nil)
-		return
-	}
-	if !exist {
+	if !service.ExistTagByID(id) {
 		util.Res(c, http.StatusBadRequest, e.ERROR_NOT_EXIST_TAG, nil)
 		return
 	}
@@ -124,7 +112,7 @@ func ImportTag(c *gin.Context) {
 	err, failNum := service.ImportTag(file)
 	if err != nil {
 		logging.Error("import tag error", err)
-		util.Res(c, http.StatusOK, e.ERROR_IMPORT_TAG_FAIL, nil)
+		util.Res(c, http.StatusOK, e.ERROR, nil)
 		return
 	}
 

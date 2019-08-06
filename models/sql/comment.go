@@ -24,3 +24,11 @@ func DeleteComment(id int) error {
 	err := models.Db.Delete(&comment).Error
 	return err
 }
+
+func ExistCommentByID(id int) bool {
+	var comment models.Comment
+	if models.Db.First(&comment, "id = ?", id).RecordNotFound() {
+		return false
+	}
+	return true
+}

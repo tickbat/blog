@@ -37,7 +37,7 @@ CREATE TABLE `auth` (
 
 CREATE TABLE `comment` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `articleId` int unsigned NOT NULL COMMENT '文章id',
+  `article_id` int unsigned NOT NULL COMMENT '文章id',
   `content` text NOT NULL COMMENT '内容',
   `created_on` int DEFAULT NULL,
   `created_by` varchar(100) DEFAULT '' COMMENT '评论者昵称',
@@ -48,15 +48,14 @@ CREATE TABLE `comment` (
 
 CREATE TABLE `reply` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `commentId` int unsigned NOT NULL COMMENT '评论id',
-  `articleId` int unsigned NOT NULL COMMENT '文章id',
+  `comment_id` int unsigned NOT NULL COMMENT '评论id',
+  `article_id` int unsigned NOT NULL COMMENT '文章id',
   `content` text NOT NULL COMMENT '内容',
   `created_on` int DEFAULT NULL,
   `created_by` varchar(100) DEFAULT '' COMMENT '回复者昵称',
   `email` varchar(50) DEFAULT '' COMMENT '回复者邮箱',
-   `reply_by` varchar(100) DEFAULT '' COMMENT '被回复者昵称',
-   `reply_email` varchar(50) DEFAULT '' COMMENT '被回复者邮箱',
-   `deleted_at` dateTime,
+   `target_name` varchar(100) DEFAULT '' COMMENT '被回复者昵称',
+   `target_email` varchar(50) DEFAULT '' COMMENT '被回复者邮箱',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
