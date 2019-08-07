@@ -31,26 +31,42 @@ func UploadImage(c *gin.Context) {
 
 	imageName := upload.GetImageName(image.Filename)
 	if !upload.CheckImageExt(imageName) || !upload.CheckImageSize(file) {
+		logging.Error("check image params error:", err)
 		code = e.ERROR_UPLOAD_CHECK_IMAGE_FORMAT
 		status = http.StatusBadRequest
 		return
 	}
 
-	savePath := upload.GetImagePath()
-	src := savePath + imageName
-	if err := upload.CheckImage(savePath); err != nil {
-		logging.Warn(err)
-		code = e.ERROR_UPLOAD_CHECK_IMAGE_FAIL
-		status = http.StatusInternalServerError
-		return
-	}
+	if c.Request.URL.Path == "/sm/upload" {
+		r, err := upload.SmUpload(file, imageName)
+		if err != nil {
+			logging.Error("upload to sm.ms error:", err)
+			code = e.ERROR_UPLOAD_CHECK_IMAGE_FORMAT
+			status = http.StatusBadRequest
+			return
+		}
+		println(r.String())
+		data["image_url"] = r.String()
+	} else {
+		savePath := upload.GetImagePath()
+		src := savePath + imageName
+		if err := upload.CheckImage(savePath); err != nil {
+			logging.Error("check image error:", err)
+			code = e.ERROR
+			status = http.StatusInternalServerError
+			return
+		}
 
-	if err := c.SaveUploadedFile(image, src); err != nil {
-		logging.Warn(err)
-		code = e.ERROR_UPLOAD_SAVE_IMAGE_FAIL
-		status = http.StatusInternalServerError
-		return
+		if err := c.SaveUploadedFile(image, src); err != nil {
+			logging.Error("save upload file error:", err)
+			code = e.ERROR
+			status = http.StatusInternalServerError
+			return
+		}
+		data["image_url"] = upload.GetImageFullUrl(imageName)
 	}
+}
 
-	data["image_url"] = upload.GetImageFullUrl(imageName)
+func UploadImageBySm(c *gin.Context) {
+
 }

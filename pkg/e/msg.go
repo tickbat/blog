@@ -14,14 +14,11 @@ var MsgFlags = map[int]string{
 
 	ERROR_NOT_EXIST_REPLY: "该回复不存在",
 
-	ERROR_AUTH_CHECK_TOKEN_FAIL:    "Token鉴权失败",
 	ERROR_AUTH_CHECK_TOKEN_TIMEOUT: "Token已超时",
-	ERROR_AUTH_TOKEN:               "Token生成失败",
-	ERROR_AUTH:                     "Token错误",
+	ERROR_NOT_EXIST_USER:           "该用户不存在",
+	ERROR_MATCH_PASSWORD:           "账号或者密码错误",
 	MISS_AUTH_TOKEN:                "缺少token",
 
-	ERROR_UPLOAD_SAVE_IMAGE_FAIL:    "保存图片失败",
-	ERROR_UPLOAD_CHECK_IMAGE_FAIL:   "检查图片失败",
 	ERROR_UPLOAD_CHECK_IMAGE_FORMAT: "校验图片错误，图片格式或大小有问题",
 }
 

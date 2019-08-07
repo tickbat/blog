@@ -12,8 +12,8 @@ writeTimeout = 60
 [database]
 type = "mysql"
 user = "root"
-password = "root"
-host = "127.0.0.1:3306"
+password = "xx"
+host = "xx"
 name = "blog"
 
 [log]
@@ -27,11 +27,11 @@ savePath = "runtime/upload/images/"
 allowExts = [".jpg", ".jpeg", ".png"]
 # MB
 maxSize = 5
+smToken = "11idykcqWOkj6VUqO8pX5Fv4OUAKa7vL"
 
 [redis]
-# 127.0.0.1:6379
-host = "120.55.62.157:6379"
-password = "redis519"
+host = "xx"
+password = "xx"
 
 [excel]
 savePath = "runtime/excel/"

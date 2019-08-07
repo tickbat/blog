@@ -18,7 +18,7 @@ var (
 
 func init() {
 	var conf config
-	// 里面的字段开头必须大写才能decode，解析的时候不区分大小写
+	// 里面的字段开头必须大写才能decode，解析的时候不区分大小写(所以toml文件首字母可以不大写)
 	if _, err := toml.DecodeFile("conf/app.toml", &conf); err != nil {
 		log.Fatal("decode config error: %v" + err.Error())
 	}
@@ -77,6 +77,7 @@ type image struct {
 	SavePath  string
 	AllowExts []string
 	MaxSize   int
+	SmToken   string
 }
 
 type redis struct {

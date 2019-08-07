@@ -1,9 +1,14 @@
 package sql
 
-import "blog/models"
+import (
+	"blog/models"
+	"github.com/jinzhu/gorm"
+)
 
-func CheckAuth(conditions models.Auth) (models.Auth, error) {
+func CheckAuth(id string) (models.Auth, error) {
 	var auth models.Auth
-	err := models.Db.Where(conditions).First(&auth).Error
-	return auth, err
+	if err := models.Db.Where("username = ?", id).First(&auth).Error; err != nil && err != gorm.ErrRecordNotFound {
+		return auth, err
+	}
+	return auth, nil
 }

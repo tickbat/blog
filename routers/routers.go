@@ -17,6 +17,8 @@ func InitRouters() *gin.Engine {
 	gin.SetMode(setting.App.RunMode)
 	r.POST("/auth", api.GetAuth)
 	r.POST("/upload", api.UploadImage)
+	r.POST("/sm/upload", api.UploadImage)
+
 	r.StaticFS("/upload/images", http.Dir(upload.GetImagePath()))
 
 	apiv1 := r.Group("/api/v1")

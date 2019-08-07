@@ -5,7 +5,8 @@ import (
 	"blog/pkg/logging"
 	"blog/pkg/setting"
 	"blog/pkg/util"
-	"fmt"
+	"github.com/imroc/req"
+	"io"
 	"mime/multipart"
 	"path"
 	"strings"
@@ -50,13 +51,27 @@ func CheckImageSize(f multipart.File) bool {
 func CheckImage(src string) error {
 	err := file.IsNotExistMkDir(src)
 	if err != nil {
-		return fmt.Errorf("file.IsNotExistMkDir err: %v", err)
+		return err
 	}
 
 	perm := file.CheckPermission(src)
 	if perm == true {
-		return fmt.Errorf("file.CheckPermission Permission denied src: %s", src)
+		return err
 	}
 
 	return nil
+}
+
+func SmUpload(image io.ReadCloser, name string) (*req.Resp, error) {
+	// c, _ := os.Open("4c50eef3bdaf0b4164ce179e576f2b2d.jpg")
+	header := req.Header{
+		"Authorization": setting.Image.SmToken,
+	}
+	uploadConfig := req.FileUpload{
+		File:      image,
+		FieldName: "smfile",
+		FileName:  name,
+	}
+	r, err := req.Post("https://sm.ms/api/v2/upload", uploadConfig, header)
+	return r, err
 }

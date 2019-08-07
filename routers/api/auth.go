@@ -12,22 +12,28 @@ import (
 
 func GetAuth(c *gin.Context) {
 	var auth models.Auth
-	if util.Validate(c, "json", &auth) != nil {
+	if util.ValidateJson(c, &auth) != nil {
 		return
 	}
-	ok, err := service.CheckAuth(auth)
+	failType, err := service.CheckAuth(auth)
 	if err != nil {
 		logging.Error("check auth from service error:", err)
 		util.Res(c, http.StatusInternalServerError, e.ERROR, nil)
 		return
 	}
-	if !ok {
-		util.Res(c, http.StatusBadRequest, e.ERROR_AUTH, nil)
+
+	if failType == 1 {
+		util.Res(c, http.StatusUnauthorized, e.ERROR_NOT_EXIST_USER, nil)
+		return
+	}
+	if failType == 2 {
+		util.Res(c, http.StatusUnauthorized, e.ERROR_MATCH_PASSWORD, nil)
 		return
 	}
 	token, err := util.GenerateToken(auth.Username)
 	if err != nil {
-		util.Res(c, http.StatusOK, e.ERROR_AUTH_TOKEN, err.Error())
+		logging.Error("generate token error:", err)
+		util.Res(c, http.StatusInternalServerError, e.ERROR, nil)
 		return
 	}
 	util.Res(c, http.StatusOK, e.SUCCESS, token)

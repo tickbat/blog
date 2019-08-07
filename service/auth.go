@@ -5,13 +5,18 @@ import (
 	"blog/models/sql"
 )
 
-func CheckAuth(conditions models.Auth) (bool, error) {
-	auth, err := sql.CheckAuth(conditions)
+// 0 验证通过，1 用户不存在， 2 密码或者用户名错误
+
+func CheckAuth(auth models.Auth) (int, error) {
+	result, err := sql.CheckAuth(auth.Username)
 	if err != nil {
-		return false, err
+		return 0, err
 	}
-	if auth.ID == 0 || auth.Password != conditions.Password {
-		return false, nil
+	if result.ID == 0 {
+		return 1, nil
 	}
-	return true, nil
+	if auth.Password != result.Password {
+		return 2, nil
+	}
+	return 0, nil
 }

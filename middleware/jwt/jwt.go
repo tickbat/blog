@@ -22,22 +22,16 @@ func JWT() gin.HandlerFunc {
 				case jwt.ValidationErrorExpired:
 					code = e.ERROR_AUTH_CHECK_TOKEN_TIMEOUT
 				default:
-					code = e.ERROR_AUTH_CHECK_TOKEN_FAIL
+					code = e.ERROR
 				}
 			}
 		}
 
 		if code != e.SUCCESS {
-			c.JSON(http.StatusUnauthorized, gin.H{
-				"code": code,
-				"msg":  e.GetMsg(code),
-				"data": nil,
-			})
-
+			util.Res(c, http.StatusUnauthorized, code, nil)
 			c.Abort()
 			return
 		}
-
 		c.Next()
 	}
 }
