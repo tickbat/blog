@@ -10,30 +10,20 @@ import (
 )
 
 func UploadImage(c *gin.Context) {
-	var err error
-	code := e.SUCCESS
-	status := http.StatusOK
-	data := make(map[string]string)
-	defer util.Res(c, status, code, data)
-
 	file, image, err := c.Request.FormFile("image")
 	if err != nil {
-		logging.Warn("FormFile error:", err)
-		code = e.INVALID_PARAMS
-		status = http.StatusBadRequest
+		logging.Error("FormFile error:", err)
+		util.Res(c, http.StatusInternalServerError, e.ERROR, nil)
 		return
 	}
 	if image == nil {
-		code = e.INVALID_PARAMS
-		status = http.StatusBadRequest
+		util.Res(c, http.StatusBadRequest, e.INVALID_PARAMS, nil)
 		return
 	}
 
 	imageName := upload.GetImageName(image.Filename)
 	if !upload.CheckImageExt(imageName) || !upload.CheckImageSize(file) {
-		logging.Error("check image params error:", err)
-		code = e.ERROR_UPLOAD_CHECK_IMAGE_FORMAT
-		status = http.StatusBadRequest
+		util.Res(c, http.StatusBadRequest, e.ERROR_UPLOAD_CHECK_IMAGE_FORMAT, nil)
 		return
 	}
 
@@ -41,32 +31,38 @@ func UploadImage(c *gin.Context) {
 		r, err := upload.SmUpload(file, imageName)
 		if err != nil {
 			logging.Error("upload to sm.ms error:", err)
-			code = e.ERROR_UPLOAD_CHECK_IMAGE_FORMAT
-			status = http.StatusBadRequest
+			util.Res(c, http.StatusInternalServerError, e.ERROR, nil)
 			return
 		}
-		println(r.String())
-		data["image_url"] = r.String()
+		var res map[string]interface{}
+		err = r.ToJSON(&res)
+		if err != nil {
+			logging.Error("parse json from sm.ms error:", err)
+			util.Res(c, http.StatusInternalServerError, e.ERROR, nil)
+			return
+		}
+		if res["success"] != true {
+			logging.Error("sm.ms response error:", res["message"])
+			util.Res(c, http.StatusInternalServerError, e.ERROR, nil)
+			return
+		}
+		util.Res(c, http.StatusOK, e.SUCCESS, res["data"])
 	} else {
 		savePath := upload.GetImagePath()
 		src := savePath + imageName
 		if err := upload.CheckImage(savePath); err != nil {
 			logging.Error("check image error:", err)
-			code = e.ERROR
-			status = http.StatusInternalServerError
+			util.Res(c, http.StatusInternalServerError, e.ERROR, nil)
 			return
 		}
 
 		if err := c.SaveUploadedFile(image, src); err != nil {
 			logging.Error("save upload file error:", err)
-			code = e.ERROR
-			status = http.StatusInternalServerError
+			util.Res(c, http.StatusInternalServerError, e.ERROR, nil)
 			return
 		}
-		data["image_url"] = upload.GetImageFullUrl(imageName)
+		util.Res(c, http.StatusOK, e.SUCCESS, gin.H{
+			"image_url": upload.GetImageFullUrl(imageName),
+		})
 	}
-}
-
-func UploadImageBySm(c *gin.Context) {
-
 }

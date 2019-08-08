@@ -63,7 +63,6 @@ func CheckImage(src string) error {
 }
 
 func SmUpload(image io.ReadCloser, name string) (*req.Resp, error) {
-	// c, _ := os.Open("4c50eef3bdaf0b4164ce179e576f2b2d.jpg")
 	header := req.Header{
 		"Authorization": setting.Image.SmToken,
 	}

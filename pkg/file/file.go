@@ -1,58 +1,58 @@
 package file
 
 import (
-    "os"
-    "path"
-    "mime/multipart"
-    "io/ioutil"
+	"io/ioutil"
+	"mime/multipart"
+	"os"
+	"path"
 )
 
 func GetSize(f multipart.File) (int, error) {
-    content, err := ioutil.ReadAll(f)
-
-    return len(content), err
+	content, err := ioutil.ReadAll(f)
+	f.Seek(0, 0)
+	return len(content), err
 }
 
 func GetExt(fileName string) string {
-    return path.Ext(fileName)
+	return path.Ext(fileName)
 }
 
 func CheckExist(src string) bool {
-    _, err := os.Stat(src)
+	_, err := os.Stat(src)
 
-    return os.IsNotExist(err)
+	return os.IsNotExist(err)
 }
 
 func CheckPermission(src string) bool {
-    _, err := os.Stat(src)
+	_, err := os.Stat(src)
 
-    return os.IsPermission(err)
+	return os.IsPermission(err)
 }
 
 func IsNotExistMkDir(src string) error {
-    if exist := CheckExist(src); exist{
-        if err := MkDir(src); err != nil {
-            return err
-        }
-    }
+	if exist := CheckExist(src); exist {
+		if err := MkDir(src); err != nil {
+			return err
+		}
+	}
 
-    return nil
+	return nil
 }
 
 func MkDir(src string) error {
-    err := os.MkdirAll(src, os.ModePerm)
-    if err != nil {
-        return err
-    }
+	err := os.MkdirAll(src, os.ModePerm)
+	if err != nil {
+		return err
+	}
 
-    return nil
+	return nil
 }
 
 func Open(name string, flag int, perm os.FileMode) (*os.File, error) {
-    f, err := os.OpenFile(name, flag, perm)
-    if err != nil {
-        return nil, err
-    }
+	f, err := os.OpenFile(name, flag, perm)
+	if err != nil {
+		return nil, err
+	}
 
-    return f, nil
+	return f, nil
 }
